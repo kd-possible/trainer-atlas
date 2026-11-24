@@ -1,0 +1,2248 @@
+<title>Trainer Knowledge Atlas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+/* Layout: single scrolling course, sticky module rail, schematic SVG figures inline with the prose.
+   Palette follows anatomical-plate convention: bone-white ground, ink labels, carmine for muscle,
+   slate-teal for the skeletal/joint layer. */
+:root{
+  --bg:#F5F5F2;
+  --surface:#FFFFFF;
+  --surface-2:#ECEBE6;
+  --ink:#16202B;
+  --ink-soft:#5A6673;
+  --line:#D5D4CD;
+  --muscle:#A8323A;
+  --muscle-soft:#F0DCDC;
+  --bone:#E3DFD4;
+  --joint:#2F6D6A;
+  --joint-soft:#DCEAE8;
+  --warn:#9A6B12;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#10151B; --surface:#182029; --surface-2:#202A34;
+    --ink:#E8E6E1; --ink-soft:#9AA6B2; --line:#2E3A46;
+    --muscle:#E0636A; --muscle-soft:#3A2228;
+    --bone:#3B4450; --joint:#5FB5AE; --joint-soft:#1D3331;
+    --warn:#D5A33F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10151B; --surface:#182029; --surface-2:#202A34;
+  --ink:#E8E6E1; --ink-soft:#9AA6B2; --line:#2E3A46;
+  --muscle:#E0636A; --muscle-soft:#3A2228;
+  --bone:#3B4450; --joint:#5FB5AE; --joint-soft:#1D3331;
+  --warn:#D5A33F;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.6; margin:0;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--bg)}
+
+.wrap{
+  max-width:860px; margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+
+h1,h2,h3{font-family:Fraunces,Georgia,serif;text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,6vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(1.4rem,4vw,1.9rem);font-weight:600}
+h3{font-size:1.12rem;font-weight:600;margin-bottom:.4rem}
+p{margin:0 0 .9rem}
+a{color:var(--joint)}
+
+/* ---------- hero ---------- */
+.hero{
+  margin-top:calc(-1 * env(safe-area-inset-top,0px));
+  padding-top:calc(env(safe-area-inset-top,0px) + 3rem);
+  padding-bottom:2.5rem;
+  background:var(--surface);
+  border-bottom:1px solid var(--line);
+}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muscle);margin:0 0 .7rem;
+}
+.lede{font-size:1.05rem;color:var(--ink-soft);max-width:60ch;margin:1rem 0 0}
+
+/* ---------- module rail ---------- */
+.rail{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:15;
+  background:var(--bg); border-bottom:1px solid var(--line);
+}
+.rail-inner{display:flex;gap:.4rem;overflow-x:auto;padding-block:.6rem;scrollbar-width:thin}
+.rail button{
+  flex:0 0 auto; font:inherit; font-size:.82rem; font-weight:500;
+  background:transparent; color:var(--ink-soft);
+  border:1px solid var(--line); border-radius:999px;
+  padding:.34rem .78rem; cursor:pointer; white-space:nowrap;
+}
+.rail button:hover{color:var(--ink);border-color:var(--ink-soft)}
+.rail button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.rail button:focus-visible{outline:2px solid var(--joint);outline-offset:2px}
+
+/* ---------- module blocks ---------- */
+.mod{padding-block:3rem;border-bottom:1px solid var(--line)}
+.mod-no{
+  font-family:"IBM Plex Mono",monospace;font-size:.75rem;letter-spacing:.12em;
+  color:var(--muscle);text-transform:uppercase;margin-bottom:.45rem;
+}
+.mod > p:first-of-type{margin-top:.8rem}
+
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:1.1rem;margin:1.4rem 0;
+}
+.fig{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:1rem;margin:1.4rem 0;
+}
+.fig figcaption{
+  font-size:.82rem;color:var(--ink-soft);margin-top:.7rem;
+  padding-top:.7rem;border-top:1px solid var(--line);
+}
+.fig svg{display:block;width:100%;height:auto;max-width:100%}
+
+/* evidence badges — the honest layer */
+.ev{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;
+  font-size:.66rem;letter-spacing:.07em;text-transform:uppercase;
+  padding:.1rem .42rem;border-radius:4px;vertical-align:.08em;
+  border:1px solid currentColor;
+}
+.ev-s{color:var(--joint)}
+.ev-a{color:var(--warn)}
+.ev-c{color:var(--muscle)}
+
+.note{
+  border-left:3px solid var(--warn);background:var(--surface-2);
+  padding:.85rem 1rem;border-radius:0 8px 8px 0;margin:1.2rem 0;
+  font-size:.93rem;
+}
+.note strong{color:var(--warn)}
+
+/* tables */
+.tw{overflow-x:auto;margin:1.2rem 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:420px;background:var(--surface)}
+th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:none}
+td code,.term{font-family:"IBM Plex Mono",monospace;font-size:.86em;color:var(--muscle)}
+
+/* control strips */
+.ctrl{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.ctrl button{
+  font:inherit;font-size:.85rem;font-weight:500;cursor:pointer;
+  background:var(--surface-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:7px;padding:.4rem .75rem;
+}
+.ctrl button[aria-pressed="true"]{background:var(--muscle);color:#fff;border-color:var(--muscle)}
+.ctrl button:focus-visible{outline:2px solid var(--joint);outline-offset:2px}
+
+.readout{
+  background:var(--surface-2);border-radius:8px;padding:.85rem 1rem;
+  font-size:.92rem;min-height:5.2rem;
+}
+.readout h4{margin:0 0 .35rem;font-size:.95rem;font-family:Inter,sans-serif;font-weight:600}
+.readout .meta{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);letter-spacing:.04em;margin-bottom:.4rem}
+.readout ul{margin:.4rem 0 0;padding-left:1.1rem}
+.readout li{margin-bottom:.15rem}
+
+/* two-col */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.2rem 0}
+.grid2 > div{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.9rem}
+
+/* term chips */
+.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.6rem;margin:1.2rem 0}
+.tcard{
+  background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--muscle);
+  border-radius:0 8px 8px 0;padding:.7rem .85rem;min-width:0;
+}
+.tcard b{font-family:"IBM Plex Mono",monospace;font-size:.85rem;color:var(--muscle);display:block;margin-bottom:.15rem}
+.tcard span{font-size:.86rem;color:var(--ink-soft)}
+
+/* slider */
+.slider-row{display:flex;align-items:center;gap:.8rem;margin:.8rem 0;flex-wrap:wrap}
+input[type=range]{flex:1 1 180px;min-width:0;accent-color:var(--muscle)}
+.val{font-family:"IBM Plex Mono",monospace;font-size:.88rem;min-width:4.5rem}
+.bar{height:12px;background:var(--surface-2);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar > i{display:block;height:100%;background:var(--muscle);transition:width .12s linear}
+
+/* quiz */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;margin-bottom:.7rem}
+.q p{margin:0 0 .6rem;font-weight:500}
+.q button{font:inherit;font-size:.82rem;cursor:pointer;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:.3rem .7rem}
+.q .ans{margin-top:.7rem;font-size:.9rem;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:.6rem}
+
+/* plain-english opener */
+.plain{
+  background:var(--joint-soft);border:1px solid var(--joint);
+  border-radius:10px;padding:.9rem 1rem;margin:1rem 0 1.4rem;
+}
+.plain b{
+  display:block;font-family:"IBM Plex Mono",monospace;font-size:.67rem;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--joint);margin-bottom:.35rem;
+}
+.plain p{margin:0 0 .55rem;font-size:.96rem}
+.plain p:last-child{margin:0}
+
+/* view toggle */
+.viewtog{display:flex;gap:.3rem;padding-block:.55rem .1rem}
+.viewtog button{
+  font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;
+  background:transparent;color:var(--ink-soft);
+  border:none;border-bottom:2px solid transparent;
+  padding:.3rem .2rem;margin-right:1rem;
+}
+.viewtog button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--muscle)}
+.viewtog button:focus-visible{outline:2px solid var(--joint);outline-offset:2px}
+
+/* study plan */
+.prog{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;margin:1.3rem 0}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.55rem}
+.prog-n{font-family:"IBM Plex Mono",monospace;font-size:.85rem}
+.prog-n b{font-size:1.15rem;color:var(--muscle)}
+.prog button{font:inherit;font-size:.78rem;cursor:pointer;background:transparent;color:var(--ink-soft);border:1px solid var(--line);border-radius:6px;padding:.2rem .55rem}
+.prog .sync{font-size:.76rem;color:var(--ink-soft);margin:.55rem 0 0}
+.sync-row{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--line)}
+.sync-row input{
+  flex:1 1 9rem;min-width:0;font:inherit;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  background:var(--surface-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:7px;padding:.4rem .6rem;
+}
+.sync-row input:focus-visible{outline:2px solid var(--joint);outline-offset:1px}
+.sync-row button{
+  font:inherit;font-size:.8rem;cursor:pointer;flex:0 0 auto;
+  background:var(--surface-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:7px;padding:.4rem .7rem;
+}
+.sync-row button:hover{border-color:var(--ink-soft)}
+.sync-row button:focus-visible{outline:2px solid var(--joint);outline-offset:2px}
+.sync-msg{font-size:.78rem;margin:.5rem 0 0;min-height:1.1rem}
+.sync-msg.ok{color:var(--joint)}
+.sync-msg.err{color:var(--muscle)}
+.sync-msg.plain-msg{color:var(--ink-soft)}
+
+.wk{margin:1.8rem 0 0}
+.wk-h{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.15rem}
+.wk-h h3{margin:0}
+.wk-h span{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muscle)}
+.wk > p{font-size:.88rem;color:var(--ink-soft);margin:0 0 .8rem}
+
+.day{
+  display:flex;gap:.8rem;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:.8rem .9rem;margin-bottom:.5rem;
+}
+.day.done{background:var(--surface-2);border-color:var(--line)}
+.day.done .day-t{text-decoration:line-through;color:var(--ink-soft)}
+.day input[type=checkbox]{flex:0 0 auto;width:20px;height:20px;margin-top:.15rem;accent-color:var(--muscle);cursor:pointer}
+.day-body{min-width:0;flex:1 1 auto}
+.day-meta{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.15rem}
+.day-t{font-weight:600;font-size:.97rem;display:block;margin-bottom:.25rem}
+.day-body p{margin:0 0 .3rem;font-size:.89rem}
+.day-drill{font-size:.86rem;color:var(--ink-soft);border-left:2px solid var(--joint);padding-left:.6rem;margin-top:.45rem}
+.day-drill b{color:var(--joint);font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;display:block}
+.jump{font:inherit;font-size:.78rem;background:none;border:none;color:var(--joint);cursor:pointer;padding:0;text-decoration:underline;margin-top:.35rem}
+
+/* energy systems */
+.ebars{display:grid;gap:.55rem;margin:.9rem 0}
+.ebrow{display:grid;grid-template-columns:minmax(0,8.5rem) 1fr 2.8rem;gap:.6rem;align-items:center;font-size:.85rem}
+.ebrow .pc{font-family:"IBM Plex Mono",monospace;font-size:.8rem;text-align:right;color:var(--ink-soft)}
+@media(max-width:430px){.ebrow{grid-template-columns:minmax(0,6rem) 1fr 2.5rem;font-size:.78rem}}
+
+/* rpe scale */
+.scale{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.9rem}
+.scale button{
+  flex:1 1 3rem;font:inherit;font-family:"IBM Plex Mono",monospace;font-size:.85rem;
+  cursor:pointer;background:var(--surface-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:6px;padding:.45rem .2rem;
+}
+.scale button[aria-pressed="true"]{background:var(--muscle);color:#fff;border-color:var(--muscle)}
+.scale button:focus-visible{outline:2px solid var(--joint);outline-offset:2px}
+
+/* claim checker */
+.claim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem;margin-bottom:.5rem}
+.claim-q{display:flex;gap:.7rem;align-items:flex-start;justify-content:space-between}
+.claim-q span{font-weight:500;font-size:.94rem;min-width:0}
+.claim-q button{font:inherit;font-size:.76rem;background:transparent;border:1px solid var(--line);border-radius:6px;color:var(--ink-soft);padding:.2rem .5rem;cursor:pointer;flex:0 0 auto;white-space:nowrap}
+.claim-a{margin-top:.65rem;border-top:1px solid var(--line);padding-top:.6rem;font-size:.9rem}
+.claim-a p{margin:.35rem 0 0}
+
+/* cue pairs */
+.cue{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.6rem;margin:1.1rem 0}
+.cue > div{min-width:0;border-radius:9px;padding:.75rem .85rem;font-size:.9rem;border:1px solid var(--line);background:var(--surface)}
+.cue .bad{border-left:3px solid var(--muscle)}
+.cue .good{border-left:3px solid var(--joint)}
+.cue b{display:block;font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.25rem}
+.cue .bad b{color:var(--muscle)}
+.cue .good b{color:var(--joint)}
+
+/* svg shared */
+.body-fill{fill:var(--bone)}
+.body-stroke{stroke:var(--bone);fill:none;stroke-linecap:round}
+.lbl{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:var(--ink-soft)}
+.lbl-b{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:var(--ink);font-weight:500}
+.hot{fill:var(--joint);cursor:pointer}
+.hot:hover{fill:var(--muscle)}
+.hot[data-on="1"]{fill:var(--muscle)}
+.musc{fill:var(--muscle-soft);stroke:var(--muscle);stroke-width:1;cursor:pointer}
+.musc[data-on="1"]{fill:var(--muscle)}
+.rule{stroke:var(--line);stroke-width:1}
+
+footer{padding-block:2.5rem;font-size:.85rem;color:var(--ink-soft)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">18 modules · beginner to trainer-level</p>
+    <h1>Trainer Knowledge Atlas</h1>
+    <p class="lede">Two courses. <b>Anatomy &amp; mechanics</b> is how the body is built and why that explains every exercise. <b>Training science</b> is everything else a certified trainer knows — programming, physiology, recovery, nutrition, coaching and how to tell a real claim from a confident one. Everything is interactive: tap the joints, drag the sliders, build a programme, test a claim.</p>
+  </div>
+</header>
+
+<nav class="rail" aria-label="Sections">
+  <div class="wrap viewtog">
+    <button type="button" id="tabAnat" aria-pressed="true">Anatomy</button>
+    <button type="button" id="tabSci" aria-pressed="false">Training science</button>
+    <button type="button" id="tabPlan" aria-pressed="false">Study plan</button>
+  </div>
+  <div class="wrap rail-inner" id="rail"></div>
+</nav>
+
+<main class="wrap">
+<div id="anatView">
+
+<!-- ═══════════ 1 ═══════════ -->
+<section class="mod" id="m1">
+  <p class="mod-no">Module 01</p>
+  <h2>The language of movement</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Every exercise, without exception, is just some joints bending, straightening or twisting. This module gives you the words for those movements — so instead of saying "a curl", you can say "the elbow bends".</p>
+    <p>That sounds like fussy vocabulary, but it's the thing that lets you work out an exercise you've never seen before. Learn these words once and the other seven modules become easy.</p>
+  </div>
+  <p>Three planes, a list of joint actions, and the habit of describing movement precisely instead of by exercise name. That's the whole module.</p>
+
+  <p><strong>Anatomical position</strong> is the reference stance: standing upright, feet forward, arms at the sides, palms facing forward. Every term below assumes a body in this position.</p>
+
+  <h3>The three planes</h3>
+  <p>Imagine three panes of glass passing through you at right angles. A movement happens <em>in</em> a plane when the body part travels parallel to that pane.</p>
+
+  <figure class="fig">
+    <div class="ctrl" id="planeCtrl">
+      <button data-p="sag" aria-pressed="true">Sagittal</button>
+      <button data-p="fro" aria-pressed="false">Frontal</button>
+      <button data-p="tra" aria-pressed="false">Transverse</button>
+    </div>
+    <svg viewBox="0 0 440 360" role="img" aria-label="Figure showing the three anatomical planes">
+      <!-- plane overlays -->
+      <g id="planeShapes">
+        <polygon id="pSag" points="110,14 168,40 168,352 110,326" fill="var(--joint)" opacity="0.22"/>
+        <line id="pSagL" x1="110" y1="14" x2="110" y2="326" stroke="var(--joint)" stroke-width="2"/>
+        <rect id="pFro" x="48" y="16" width="124" height="320" fill="var(--joint)" opacity="0.2" style="display:none"/>
+        <polygon id="pTra" points="42,182 178,182 200,208 64,208" fill="var(--joint)" opacity="0.26" style="display:none"/>
+      </g>
+      <!-- body -->
+      <g class="body-fill">
+        <circle cx="110" cy="36" r="20"/>
+        <rect x="102" y="54" width="16" height="12" rx="4"/>
+        <path d="M80 66 H140 L146 114 L134 172 H86 L74 114 Z"/>
+        <path d="M86 172 H134 L130 208 H90 Z"/>
+      </g>
+      <g class="body-stroke" stroke-width="14">
+        <line x1="82" y1="74" x2="66" y2="132"/><line x1="66" y1="132" x2="60" y2="188"/>
+        <line x1="138" y1="74" x2="154" y2="132"/><line x1="154" y1="132" x2="160" y2="188"/>
+      </g>
+      <g class="body-stroke" stroke-width="18">
+        <line x1="98" y1="206" x2="94" y2="270"/><line x1="94" y1="270" x2="92" y2="330"/>
+        <line x1="122" y1="206" x2="126" y2="270"/><line x1="126" y1="270" x2="128" y2="330"/>
+      </g>
+      <!-- axis -->
+      <g id="axisG">
+        <line id="axL" x1="56" y1="120" x2="164" y2="120" stroke="var(--muscle)" stroke-width="2" stroke-dasharray="5 4"/>
+        <text id="axT" class="lbl-b" x="224" y="124" fill="var(--muscle)">frontal axis</text>
+      </g>
+      <!-- caption block -->
+      <text class="lbl-b" x="224" y="44" id="pTitle">Sagittal plane</text>
+      <text class="lbl" x="224" y="64" id="pL1">Splits the body left / right.</text>
+      <text class="lbl" x="224" y="80" id="pL2">Forward-and-back movement.</text>
+      <text class="lbl" x="224" y="104" id="pL3">Squat · curl · bench · running</text>
+      <line class="rule" x1="224" y1="140" x2="420" y2="140"/>
+      <text class="lbl" x="224" y="160">Movement in a plane rotates around</text>
+      <text class="lbl" x="224" y="174">an axis perpendicular to it — like a</text>
+      <text class="lbl" x="224" y="188">door swinging on its hinge.</text>
+    </svg>
+    <figcaption>Planes are defined relative to <em>your body</em>, not the room. Lie down on a bench and the planes rotate with you — which is why the bench press is a transverse-plane action at the shoulder even though you feel like you're pushing "up".</figcaption>
+  </figure>
+
+  <h3>The joint actions</h3>
+  <p>These are the verbs. Learn them and you can describe any rep.</p>
+
+  <div class="terms">
+    <div class="tcard"><b>Flexion</b><span>Joint angle decreases — curling the elbow, bending the knee. Sagittal.</span></div>
+    <div class="tcard"><b>Extension</b><span>Joint angle increases — standing up out of a squat. Sagittal.</span></div>
+    <div class="tcard"><b>Abduction</b><span>Limb moves away from the midline — lateral raise. Frontal.</span></div>
+    <div class="tcard"><b>Adduction</b><span>Limb returns toward the midline — cable crossover. Frontal.</span></div>
+    <div class="tcard"><b>Internal rotation</b><span>Limb turns inward at shoulder or hip. Transverse.</span></div>
+    <div class="tcard"><b>External rotation</b><span>Limb turns outward. Transverse.</span></div>
+    <div class="tcard"><b>Horizontal adduction</b><span>Arm sweeps across the chest at shoulder height — pec deck.</span></div>
+    <div class="tcard"><b>Horizontal abduction</b><span>Arm sweeps out and back — reverse fly.</span></div>
+    <div class="tcard"><b>Dorsiflexion</b><span>Ankle only: toes pull toward the shin.</span></div>
+    <div class="tcard"><b>Plantarflexion</b><span>Ankle only: toes point down — calf raise.</span></div>
+    <div class="tcard"><b>Pronation</b><span>Forearm turns palm-down.</span></div>
+    <div class="tcard"><b>Supination</b><span>Forearm turns palm-up.</span></div>
+    <div class="tcard"><b>Elevation / depression</b><span>Shoulder blades ride up toward the ears, or pull down.</span></div>
+    <div class="tcard"><b>Protraction / retraction</b><span>Shoulder blades slide apart, or squeeze together.</span></div>
+  </div>
+
+  <p><strong>Directional terms</strong> you'll need constantly: <span class="term">anterior</span> front · <span class="term">posterior</span> back · <span class="term">superior</span> above · <span class="term">inferior</span> below · <span class="term">medial</span> toward midline · <span class="term">lateral</span> away from it · <span class="term">proximal</span> closer to the trunk · <span class="term">distal</span> further from it.</p>
+
+  <div class="note"><strong>The rule that fixes most confusion:</strong> classify the <em>joint action</em>, not the exercise. Almost no lift is purely one plane. A deadlift is sagittal-dominant; a bench press is not. Analyse joint by joint and the ambiguity disappears.</div>
+</section>
+
+<!-- ═══════════ 2 ═══════════ -->
+<section class="mod" id="m2">
+  <p class="mod-no">Module 02</p>
+  <h2>Joints — what each one is allowed to do</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Every joint has a shape, and that shape decides what it's allowed to do. Your elbow is a door hinge — it swings one way and that's it. Your shoulder is a ball sitting in a cup, so it goes almost anywhere.</p>
+    <p>Once you know which joint is which kind, you stop being surprised by exercises. You can tell what a movement can train, and what it physically cannot.</p>
+  </div>
+  <p>A joint's <em>shape</em> decides which planes it can move in. Muscles only pull; bone geometry decides where the bone is permitted to go. That's why you cannot curl in the frontal plane no matter how you hold the dumbbell.</p>
+  <p>The technical measure is <strong>degrees of freedom</strong> (DOF) — how many planes a joint moves through independently. One, two, or three.</p>
+
+  <figure class="fig">
+    <p style="font-size:.85rem;color:var(--ink-soft);margin:0 0 .7rem">Tap a joint.</p>
+    <svg viewBox="0 0 260 360" role="img" aria-label="Interactive joint map">
+      <g class="body-fill" opacity=".85">
+        <circle cx="110" cy="36" r="20"/>
+        <rect x="102" y="54" width="16" height="12" rx="4"/>
+        <path d="M80 66 H140 L146 114 L134 172 H86 L74 114 Z"/>
+        <path d="M86 172 H134 L130 208 H90 Z"/>
+      </g>
+      <g class="body-stroke" stroke-width="14" opacity=".85">
+        <line x1="82" y1="74" x2="66" y2="132"/><line x1="66" y1="132" x2="60" y2="188"/>
+        <line x1="138" y1="74" x2="154" y2="132"/><line x1="154" y1="132" x2="160" y2="188"/>
+      </g>
+      <g class="body-stroke" stroke-width="18" opacity=".85">
+        <line x1="98" y1="206" x2="94" y2="270"/><line x1="94" y1="270" x2="92" y2="330"/>
+        <line x1="122" y1="206" x2="126" y2="270"/><line x1="126" y1="270" x2="128" y2="330"/>
+      </g>
+      <g id="joints">
+        <circle class="hot" data-j="shoulder" cx="138" cy="74" r="8"/>
+        <circle class="hot" data-j="scapula"  cx="84"  cy="86" r="8"/>
+        <circle class="hot" data-j="elbow"    cx="154" cy="132" r="8"/>
+        <circle class="hot" data-j="forearm"  cx="158" cy="162" r="7"/>
+        <circle class="hot" data-j="spine"    cx="110" cy="140" r="8"/>
+        <circle class="hot" data-j="hip"      cx="122" cy="206" r="8"/>
+        <circle class="hot" data-j="knee"     cx="126" cy="270" r="8"/>
+        <circle class="hot" data-j="ankle"    cx="128" cy="326" r="8"/>
+      </g>
+      <text class="lbl" x="178" y="78">shoulder</text>
+      <text class="lbl" x="22"  y="90">scapula</text>
+      <text class="lbl" x="178" y="136">elbow</text>
+      <text class="lbl" x="178" y="166">forearm</text>
+      <text class="lbl" x="150" y="144">spine</text>
+      <text class="lbl" x="178" y="210">hip</text>
+      <text class="lbl" x="178" y="274">knee</text>
+      <text class="lbl" x="178" y="330">ankle</text>
+    </svg>
+    <div class="readout" id="jointOut">
+      <h4>Pick a joint</h4>
+      <p class="meta">type · degrees of freedom · planes</p>
+      <p style="margin:0;color:var(--ink-soft)">Each one tells you what it's built for, and the gym consequence.</p>
+    </div>
+  </figure>
+
+  <h3>The six joint types</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Type</th><th>DOF</th><th>Planes</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td><b>Hinge</b></td><td>1</td><td>Sagittal only</td><td>Elbow, knee, ankle, fingers</td></tr>
+      <tr><td><b>Pivot</b></td><td>1</td><td>Transverse only</td><td>Forearm, top of neck</td></tr>
+      <tr><td><b>Condyloid</b></td><td>2</td><td>Sagittal + frontal</td><td>Wrist, knuckles</td></tr>
+      <tr><td><b>Saddle</b></td><td>2</td><td>Sagittal + frontal</td><td>Base of thumb</td></tr>
+      <tr><td><b>Ball-and-socket</b></td><td>3</td><td>All three</td><td>Shoulder, hip</td></tr>
+      <tr><td><b>Gliding</b></td><td>small, multi</td><td>Slide, not swing</td><td>Spinal facets, wrist &amp; foot bones</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Why the shoulder is the one that complains</h3>
+  <p>The hip and shoulder are both ball-and-socket, built to opposite philosophies.</p>
+
+  <figure class="fig">
+    <svg viewBox="0 0 440 210" role="img" aria-label="Shoulder versus hip socket depth comparison">
+      <!-- shoulder -->
+      <text class="lbl-b" x="14" y="20">SHOULDER — shallow socket</text>
+      <path d="M96 42 Q84 80 96 118" stroke="var(--bone)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <circle cx="136" cy="80" r="33" fill="var(--bone)"/>
+      <path d="M136 113 L150 180" stroke="var(--bone)" stroke-width="16" stroke-linecap="round"/>
+      <path d="M96 42 Q84 80 96 118" stroke="var(--muscle)" stroke-width="3" fill="none" opacity=".9"/>
+      <text class="lbl" x="14" y="86">glenoid</text>
+      <text class="lbl" x="14" y="99">(shallow)</text>
+      <text class="lbl" x="118" y="196">humerus</text>
+      <text class="lbl" x="176" y="58">labrum + capsule +</text>
+      <text class="lbl" x="176" y="71">rotator cuff do</text>
+      <text class="lbl" x="176" y="84">the holding</text>
+      <line class="rule" x1="300" y1="14" x2="300" y2="196"/>
+      <!-- hip -->
+      <text class="lbl-b" x="316" y="20">HIP — deep socket</text>
+      <path d="M398 40 Q352 80 398 120" stroke="var(--bone)" stroke-width="11" fill="none" stroke-linecap="round"/>
+      <circle cx="384" cy="80" r="27" fill="var(--bone)"/>
+      <path d="M384 104 L370 180" stroke="var(--bone)" stroke-width="16" stroke-linecap="round"/>
+      <path d="M398 40 Q352 80 398 120" stroke="var(--joint)" stroke-width="3" fill="none"/>
+      <text class="lbl" x="316" y="104">acetabulum</text>
+      <text class="lbl" x="316" y="117">wraps the ball</text>
+      <text class="lbl" x="316" y="196">bone does the containing</text>
+    </svg>
+    <figcaption>The glenoid is often described as roughly a quarter to a third the size of the humeral head <span class="ev ev-a">approximate</span> — a golf ball on a tee. Huge range, minimal bony containment. The hip trades range for stability and gets it from bone.</figcaption>
+  </figure>
+
+  <p>The payoff of the shoulder's design is the largest range of motion of any joint in the body. The cost is that soft tissue does the work of stability: the <strong>labrum</strong> (a fibrocartilage rim deepening the socket), the <strong>capsule and ligaments</strong> (which are slack through mid-range and only tighten near end range — so passive restraint is nearly absent exactly where training happens), and the <strong>rotator cuff</strong>, whose main job is not producing movement but compressing the head into the socket on every rep.</p>
+
+  <p>Separately, the <strong>scapula</strong> isn't attached to the ribcage by a socket at all — it floats on muscle. Serratus anterior, lower and middle trapezius and rhomboids <em>aim the socket</em> while the arm moves. Raising the arm overhead is commonly taught as roughly two parts shoulder-joint motion to one part scapular upward rotation <span class="ev ev-a">approximate</span>. "Shoulder blades down and back" is a cue about this structure, not the shoulder joint.</p>
+
+  <div class="note"><strong>Knee valgus is not a knee action.</strong> The knee has almost no frontal-plane range. Knees caving in is hip adduction and internal rotation, often with ankle collapse, showing up at the knee. Address the hip and ankle.</div>
+
+  <div class="note"><strong>Contested, read carefully.</strong> <span class="ev ev-c">contested</span> The old "impingement" model — tendon pinched under the acromion — has been substantially challenged. Terminology has shifted toward "subacromial pain syndrome", and placebo-controlled surgical trials reportedly found decompression no better than sham. I'd verify those trials directly rather than take my word for it. Rotator cuff and labral changes also appear on imaging in many pain-free people, and the posture–pain link is weaker than commonly claimed. Practical reading: the shoulder is load-tolerant and adaptable, not fragile. Manage load and progression rather than fearing specific movements.</div>
+</section>
+
+<!-- ═══════════ 3 ═══════════ -->
+<section class="mod" id="m3">
+  <p class="mod-no">Module 03</p>
+  <h2>How muscle actually produces movement</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>A muscle is a rubber band stretched between two bones. It can do exactly one thing: pull its two ends closer together. It cannot push.</p>
+    <p>So everything a muscle "does" follows from <em>where its two ends are attached</em>. Find both ends, ask what happens when the gap closes, and you've worked out its job — no memorising required.</p>
+  </div>
+
+  <p>A muscle crosses a joint and attaches to bone at both ends. The <strong>origin</strong> is the attachment on the more stable bone; the <strong>insertion</strong> is on the bone that moves. When the muscle shortens, it pulls insertion toward origin. That single sentence predicts what every muscle does.</p>
+
+  <figure class="fig">
+    <svg viewBox="0 0 440 190" role="img" aria-label="Origin, insertion and line of pull of the biceps">
+      <!-- upper arm -->
+      <rect x="40" y="30" width="22" height="100" rx="8" fill="var(--bone)"/>
+      <text class="lbl" x="18" y="24">humerus</text>
+      <!-- forearm -->
+      <rect x="52" y="118" width="190" height="20" rx="9" fill="var(--bone)"/>
+      <text class="lbl" x="186" y="158">radius / ulna</text>
+      <!-- joint -->
+      <circle cx="62" cy="128" r="8" fill="var(--joint)"/>
+      <text class="lbl" x="34" y="152">elbow</text>
+      <!-- muscle -->
+      <path d="M48 42 Q30 92 86 124" stroke="var(--muscle)" stroke-width="13" fill="none" stroke-linecap="round" opacity=".85"/>
+      <circle cx="48" cy="42" r="5" fill="var(--muscle)"/>
+      <circle cx="86" cy="124" r="5" fill="var(--muscle)"/>
+      <text class="lbl-b" x="92" y="46" fill="var(--muscle)">ORIGIN</text>
+      <text class="lbl" x="92" y="60">on the stable bone</text>
+      <text class="lbl-b" x="100" y="110" fill="var(--muscle)">INSERTION</text>
+      <text class="lbl" x="100" y="96">on the bone that moves</text>
+      <!-- arrow -->
+      <path d="M250 128 Q268 92 254 56" stroke="var(--muscle)" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+      <path d="M254 56 l-5 9 l10 -1 z" fill="var(--muscle)"/>
+      <text class="lbl" x="268" y="92">shortening pulls</text>
+      <text class="lbl" x="268" y="106">insertion toward origin</text>
+      <text class="lbl" x="268" y="120">= elbow flexion</text>
+    </svg>
+    <figcaption>Work out any muscle's action by finding both attachments and asking what happens when the gap closes. That's the method trainers use when they meet an unfamiliar muscle.</figcaption>
+  </figure>
+
+  <h3>Three ways a muscle contracts</h3>
+  <div class="grid2">
+    <div><h3>Concentric</h3><p style="margin:0;font-size:.92rem">Muscle shortens under load. Standing up out of the squat; curling the weight up. Usually the "lifting" half.</p></div>
+    <div><h3>Eccentric</h3><p style="margin:0;font-size:.92rem">Muscle lengthens while still producing force — controlling the descent. You can control more load eccentrically than you can lift. Strongly associated with delayed-onset muscle soreness. <span class="ev ev-s">settled</span></p></div>
+    <div><h3>Isometric</h3><p style="margin:0;font-size:.92rem">Length doesn't change; force is produced anyway. Plank, farmer's carry, your spinal erectors during every deadlift.</p></div>
+  </div>
+
+  <h3>Roles in a given movement</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Role</th><th>What it does</th><th>Example in a squat</th></tr></thead>
+    <tbody>
+      <tr><td><b>Agonist</b> (prime mover)</td><td>Produces the intended action</td><td>Quadriceps, gluteus maximus</td></tr>
+      <tr><td><b>Antagonist</b></td><td>Opposes it; relaxes or controls</td><td>Hamstrings at the knee</td></tr>
+      <tr><td><b>Synergist</b></td><td>Assists the agonist</td><td>Adductor magnus assisting hip extension</td></tr>
+      <tr><td><b>Stabiliser</b></td><td>Holds a segment still so the movers can work</td><td>Erector spinae, abdominals, mid-trap</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>The same muscle changes role depending on the exercise. Hamstrings are the agonist in a leg curl, a stabiliser and hip extensor in a deadlift, and an antagonist at the knee during a leg extension. Memorising "hamstrings = leg curl" is how beginners get stuck; thinking in roles is how trainers don't.</p>
+
+  <div class="note"><strong>Length–tension relationship.</strong> A muscle produces the most force near a mid-range length, and less when very short or very stretched. <span class="ev ev-s">settled</span> This is part of why a lift has a sticking point — though the moment-arm effect in Module 5 is usually the larger factor.</div>
+</section>
+
+<!-- ═══════════ 4 ═══════════ -->
+<section class="mod" id="m4">
+  <p class="mod-no">Module 04</p>
+  <h2>Muscle atlas</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>This is the map. Don't try to swallow it in one sitting — tap a muscle, read the three lines, move on. The study plan spreads it over four short days.</p>
+    <p>For each muscle you only need three things: roughly where it sits, which joint it crosses, and one exercise that reaches it. That's enough to talk about training properly.</p>
+  </div>
+  <p>Schematic, not photographic — the aim is to know where each one sits and what it does, not to pass an anatomy practical. Tap a muscle.</p>
+
+  <figure class="fig">
+    <div class="ctrl" id="viewCtrl">
+      <button data-v="front" aria-pressed="true">Front view</button>
+      <button data-v="back" aria-pressed="false">Back view</button>
+    </div>
+    <svg viewBox="0 0 260 360" role="img" aria-label="Interactive muscle map">
+      <g class="body-fill" opacity=".5">
+        <circle cx="110" cy="34" r="19"/>
+        <rect x="102" y="51" width="16" height="12" rx="4"/>
+        <path d="M78 64 H142 L148 114 L134 174 H86 L72 114 Z"/>
+        <path d="M86 174 H134 L130 210 H90 Z"/>
+      </g>
+      <g class="body-stroke" stroke-width="15" opacity=".5">
+        <line x1="80" y1="74" x2="62" y2="134"/><line x1="62" y1="134" x2="56" y2="190"/>
+        <line x1="140" y1="74" x2="158" y2="134"/><line x1="158" y1="134" x2="164" y2="190"/>
+      </g>
+      <g class="body-stroke" stroke-width="19" opacity=".5">
+        <line x1="98" y1="208" x2="94" y2="272"/><line x1="94" y1="272" x2="92" y2="332"/>
+        <line x1="122" y1="208" x2="126" y2="272"/><line x1="126" y1="272" x2="128" y2="332"/>
+      </g>
+
+      <g id="gFront">
+        <ellipse class="musc" data-m="pec"     cx="95"  cy="86"  rx="17" ry="13"/>
+        <ellipse class="musc" data-m="pec"     cx="126" cy="86"  rx="17" ry="13"/>
+        <ellipse class="musc" data-m="delt"    cx="78"  cy="72"  rx="10" ry="12"/>
+        <ellipse class="musc" data-m="delt"    cx="142" cy="72"  rx="10" ry="12"/>
+        <ellipse class="musc" data-m="biceps"  cx="70"  cy="104" rx="8"  ry="17" transform="rotate(-14 70 104)"/>
+        <ellipse class="musc" data-m="biceps"  cx="150" cy="104" rx="8"  ry="17" transform="rotate(14 150 104)"/>
+        <ellipse class="musc" data-m="forearm" cx="59"  cy="162" rx="7"  ry="19"/>
+        <ellipse class="musc" data-m="forearm" cx="161" cy="162" rx="7"  ry="19"/>
+        <rect    class="musc" data-m="abs"     x="99"  y="112" width="22" height="56" rx="7"/>
+        <ellipse class="musc" data-m="oblique" cx="86"  cy="142" rx="8"  ry="22"/>
+        <ellipse class="musc" data-m="oblique" cx="134" cy="142" rx="8"  ry="22"/>
+        <ellipse class="musc" data-m="quad"    cx="95"  cy="240" rx="12" ry="30"/>
+        <ellipse class="musc" data-m="quad"    cx="125" cy="240" rx="12" ry="30"/>
+        <ellipse class="musc" data-m="tibant"  cx="90"  cy="302" rx="6"  ry="20"/>
+        <ellipse class="musc" data-m="tibant"  cx="130" cy="302" rx="6"  ry="20"/>
+      </g>
+
+      <g id="gBack" style="display:none">
+        <path  class="musc" data-m="trap" d="M90 66 H130 L120 108 H100 Z"/>
+        <ellipse class="musc" data-m="reardelt" cx="78" cy="72" rx="10" ry="12"/>
+        <ellipse class="musc" data-m="reardelt" cx="142" cy="72" rx="10" ry="12"/>
+        <path  class="musc" data-m="lat" d="M82 96 Q74 140 100 168 L100 112 Z"/>
+        <path  class="musc" data-m="lat" d="M138 96 Q146 140 120 168 L120 112 Z"/>
+        <ellipse class="musc" data-m="triceps" cx="70" cy="104" rx="8" ry="17" transform="rotate(-14 70 104)"/>
+        <ellipse class="musc" data-m="triceps" cx="150" cy="104" rx="8" ry="17" transform="rotate(14 150 104)"/>
+        <rect  class="musc" data-m="erector" x="103" y="108" width="14" height="62" rx="6"/>
+        <ellipse class="musc" data-m="glute" cx="98"  cy="192" rx="16" ry="17"/>
+        <ellipse class="musc" data-m="glute" cx="124" cy="192" rx="16" ry="17"/>
+        <ellipse class="musc" data-m="ham"   cx="95"  cy="244" rx="12" ry="30"/>
+        <ellipse class="musc" data-m="ham"   cx="125" cy="244" rx="12" ry="30"/>
+        <ellipse class="musc" data-m="calf"  cx="93"  cy="300" rx="9" ry="22"/>
+        <ellipse class="musc" data-m="calf"  cx="127" cy="300" rx="9" ry="22"/>
+      </g>
+    </svg>
+    <div class="readout" id="muscOut">
+      <h4>Pick a muscle</h4>
+      <p class="meta">joint crossed · action · trained by</p>
+      <p style="margin:0;color:var(--ink-soft)">Shapes are schematic — positions are approximately right, outlines are simplified.</p>
+    </div>
+  </figure>
+</section>
+
+<!-- ═══════════ 5 ═══════════ -->
+<section class="mod" id="m5">
+  <p class="mod-no">Module 05</p>
+  <h2>Levers and torque — why exercises feel hard where they do</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Push a door right next to its hinges and it barely budges. Push the same door at the handle and it swings open easily. Same push — the difference is how far you are from the hinge.</p>
+    <p>Your joints are the hinges. A dumbbell weighs the same all the way through a curl, but its <em>distance from the elbow</em> changes as you move — so the work your muscle has to do changes too. That one idea is this whole module, and it explains sticking points, why cables feel different from dumbbells, and why some exercises "don't hit" where you expected.</p>
+  </div>
+
+  <p>Muscles don't lift weights directly. They apply force to a bone, which rotates around a joint. What matters is <strong>torque</strong>: force multiplied by the perpendicular distance from the joint to the line of the load. That distance is the <strong>moment arm</strong>.</p>
+
+  <p>A dumbbell weighs the same at every point in a curl. The <em>demand on the biceps</em> does not, because the moment arm changes as the forearm rotates. Drag the slider.</p>
+
+  <figure class="fig">
+    <svg viewBox="0 0 420 230" role="img" aria-label="Biceps curl moment arm demonstration">
+      <!-- upper arm fixed vertical -->
+      <rect x="52" y="20" width="20" height="100" rx="8" fill="var(--bone)"/>
+      <circle cx="62" cy="124" r="9" fill="var(--joint)"/>
+      <text class="lbl" x="18" y="148">elbow</text>
+      <!-- forearm rotates -->
+      <g id="fore">
+        <line x1="62" y1="124" x2="62" y2="224" stroke="var(--bone)" stroke-width="18" stroke-linecap="round"/>
+        <circle id="hand" cx="62" cy="224" r="12" fill="var(--muscle)"/>
+      </g>
+      <!-- moment arm indicator -->
+      <line id="ma" x1="62" y1="124" x2="62" y2="124" stroke="var(--muscle)" stroke-width="2" stroke-dasharray="4 3"/>
+      <text id="maT" class="lbl-b" x="0" y="0" fill="var(--muscle)" opacity="0"></text>
+      <!-- gravity line -->
+      <line id="grav" x1="62" y1="224" x2="62" y2="224" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="3 3"/>
+      <!-- legend -->
+      <line class="rule" x1="240" y1="18" x2="240" y2="212"/>
+      <text class="lbl-b" x="256" y="34">Moment arm</text>
+      <text class="lbl" x="256" y="50">horizontal distance from the</text>
+      <text class="lbl" x="256" y="64">elbow to the weight</text>
+      <text class="lbl-b" x="256" y="94">Torque demand</text>
+      <text class="lbl" x="256" y="110">= weight × moment arm</text>
+      <text class="lbl" x="256" y="140">Peaks when the forearm is</text>
+      <text class="lbl" x="256" y="154">horizontal. Near lockout and</text>
+      <text class="lbl" x="256" y="168">near the top, the biceps is</text>
+      <text class="lbl" x="256" y="182">barely loaded.</text>
+    </svg>
+    <div class="slider-row">
+      <label for="curlRange" style="font-size:.85rem">Elbow angle</label>
+      <input type="range" id="curlRange" min="0" max="150" value="0" step="1">
+      <span class="val" id="curlVal">0°</span>
+    </div>
+    <div class="bar"><i id="curlBar" style="width:0%"></i></div>
+    <p style="font-size:.85rem;color:var(--ink-soft);margin:.5rem 0 0">Biceps torque demand: <b id="curlPct">0%</b> of peak</p>
+    <figcaption>This is the <strong>resistance curve</strong> of an exercise. It explains sticking points, why a preacher curl feels brutal at the bottom and a spider curl at the top, and why cables and bands feel different from free weights — they change the curve, not the muscle.</figcaption>
+  </figure>
+
+  <h3>The three lever classes</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Class</th><th>Arrangement</th><th>Body example</th></tr></thead>
+    <tbody>
+      <tr><td><b>First</b></td><td>Fulcrum between effort and load</td><td>Neck extensors holding the head up</td></tr>
+      <tr><td><b>Second</b></td><td>Load between fulcrum and effort</td><td>Calf raise — toes are the fulcrum</td></tr>
+      <tr><td><b>Third</b></td><td>Effort between fulcrum and load</td><td>Most of the body, including the biceps curl</td></tr>
+    </tbody>
+  </table></div>
+  <p>Third-class levers trade force for speed and range: your biceps must produce far more force than the dumbbell weighs, but a small shortening moves the hand a long way. That's the design the human body overwhelmingly uses. <span class="ev ev-s">settled</span></p>
+
+  <div class="note"><strong>Practical consequence.</strong> When an exercise "doesn't hit" a muscle, the usual culprit is the resistance curve, not the muscle. Changing body angle, switching to a cable, or adding a band changes where in the range the load is heaviest.</div>
+</section>
+
+<!-- ═══════════ 6 ═══════════ -->
+<section class="mod" id="m6">
+  <p class="mod-no">Module 06</p>
+  <h2>The movement patterns</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Instead of thinking "chest day, back day", trainers think in movements: push something away, pull something toward you, squat down, bend at the hips, carry something heavy.</p>
+    <p>It's a better filing system, because it makes gaps obvious. Run your week against the list below and you'll usually find one or two whole categories you never do.</p>
+  </div>
+  <p>Trainers organise programmes by pattern rather than by muscle, because patterns map onto how the body is built and make gaps obvious. The common list is seven.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Pattern</th><th>Dominant joint action</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td><b>Squat</b></td><td>Knee + hip extension, sagittal</td><td>Back squat, goblet squat, leg press</td></tr>
+      <tr><td><b>Hinge</b></td><td>Hip extension, knee relatively still</td><td>Deadlift, RDL, hip thrust, kettlebell swing</td></tr>
+      <tr><td><b>Vertical push</b></td><td>Shoulder flexion/abduction + elbow extension</td><td>Overhead press, landmine press</td></tr>
+      <tr><td><b>Vertical pull</b></td><td>Shoulder adduction/extension + elbow flexion</td><td>Pull-up, lat pulldown</td></tr>
+      <tr><td><b>Horizontal push</b></td><td>Shoulder horizontal adduction, transverse</td><td>Bench press, push-up, dip</td></tr>
+      <tr><td><b>Horizontal pull</b></td><td>Shoulder extension / horizontal abduction</td><td>Barbell row, cable row, face pull</td></tr>
+      <tr><td><b>Loaded carry &amp; anti-rotation</b></td><td>Mostly isometric; frontal + transverse control</td><td>Farmer's walk, suitcase carry, Pallof press</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>A single-leg or lunge category is often added as an eighth, and some systems fold rotation out as its own pattern. The exact list is a teaching convention rather than a biological fact <span class="ev ev-a">convention</span> — its value is that running your week against it exposes what you've skipped.</p>
+
+  <div class="note"><strong>The common gap.</strong> Typical gym routines lean almost entirely sagittal. Frontal and transverse work — lateral lunges, carries, chops, anti-rotation holds — gets skipped. This is a widely repeated observation in trainer education rather than a measured statistic <span class="ev ev-a">rule of thumb</span>, but it's easy to check against your own logbook.</div>
+</section>
+
+<!-- ═══════════ 7 ═══════════ -->
+<section class="mod" id="m7">
+  <p class="mod-no">Module 07</p>
+  <h2>Exercise analysis — the method</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>This is the payoff. Four questions you ask about <em>any</em> exercise — including one you've never seen, or one someone just made up — and you can work out what it trains and where it'll feel hardest.</p>
+    <p>Try answering them yourself before you tap an exercise below. Getting it half-right and then checking teaches far more than reading the finished table.</p>
+  </div>
+  <p>This is the skill the whole course is building toward. Given any exercise, you should be able to produce this table yourself. Four questions, per joint:</p>
+  <ol style="margin:0 0 1.2rem;padding-left:1.2rem">
+    <li>Which joints move, and which are holding still?</li>
+    <li>What action is happening at each — in which plane?</li>
+    <li>Which muscles produce that action (agonist), and which hold position (stabiliser)?</li>
+    <li>Where in the range is the moment arm longest — i.e. where is it hardest?</li>
+  </ol>
+
+  <figure class="fig">
+    <div class="ctrl" id="exCtrl"></div>
+    <div class="readout" id="exOut"></div>
+  </figure>
+
+  <p>Work through unfamiliar exercises this way and you stop needing anyone to tell you what a movement trains. You also stop being fooled by exercise names: a "chest fly" and a "pec deck" are the same joint action with a different resistance curve, and a "leg press" and a "squat" differ mainly in what the spine and hip are asked to stabilise.</p>
+</section>
+
+<!-- ═══════════ 8 ═══════════ -->
+<section class="mod" id="m8">
+  <p class="mod-no">Module 08</p>
+  <h2>Putting it to work — and what's actually uncertain</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Two halves. First, the handful of dials you actually turn when writing a programme — how much, how heavy, how often, how hard.</p>
+    <p>Second, and more useful: which confident-sounding claims you'll hear in gyms and certification courses are genuinely still being argued about. Knowing the difference is what separates someone who understands this from someone repeating slides.</p>
+  </div>
+
+  <h3>Programme variables</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Variable</th><th>What it means</th><th>Typical guidance</th></tr></thead>
+    <tbody>
+      <tr><td><b>Volume</b></td><td>Hard sets per muscle per week</td><td>Often cited as roughly 10–20 sets/week for growth <span class="ev ev-a">approximate</span></td></tr>
+      <tr><td><b>Intensity</b></td><td>Load relative to your 1RM</td><td>Strength work skews heavier and lower-rep; hypertrophy tolerates a wide range</td></tr>
+      <tr><td><b>Proximity to failure</b></td><td>Reps left in reserve</td><td>Training near but not always to failure is the common recommendation</td></tr>
+      <tr><td><b>Frequency</b></td><td>Sessions per muscle per week</td><td>Total volume appears to matter more than how it's split <span class="ev ev-a">approximate</span></td></tr>
+      <tr><td><b>Progression</b></td><td>Adding load, reps or sets over time</td><td>The non-negotiable one</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><strong>I'd verify these numbers.</strong> The set and rep figures above are widely repeated in the training literature but the ranges shift as new work comes out, and my information ends in mid-2026. Treat them as starting points, not settled values, and check a current primary source if you need precision.</div>
+
+  <h3>Things commonly taught as fact that are genuinely debated</h3>
+  <div class="grid2">
+    <div><h3>Muscle imbalance causes injury <span class="ev ev-c">contested</span></h3><p style="margin:0;font-size:.9rem">Mechanically plausible and universally taught. The evidence linking specific imbalances to injury is inconsistent. Balanced pulling volume is still sensible — just not because it's proven preventive.</p></div>
+    <div><h3>Posture determines pain <span class="ev ev-c">contested</span></h3><p style="margin:0;font-size:.9rem">The link between resting posture and pain is weaker than certification material usually implies.</p></div>
+    <div><h3>Static stretching before lifting <span class="ev ev-c">contested</span></h3><p style="margin:0;font-size:.9rem">Short-term force reductions have been reported; the practical magnitude is argued over.</p></div>
+    <div><h3>"Activation" studies = growth <span class="ev ev-c">contested</span></h3><p style="margin:0;font-size:.9rem">EMG measures electrical activity in one session. It is not a direct measure of long-term hypertrophy, though it's routinely marketed as one.</p></div>
+    <div><h3>Corrective exercise fixes movement faults <span class="ev ev-c">contested</span></h3><p style="margin:0;font-size:.9rem">Movement-screen findings appear in plenty of pain-free people; predictive and preventive claims are weaker than the courses suggest.</p></div>
+    <div><h3>Fascia / "anatomy trains" lines <span class="ev ev-c">contested</span></h3><p style="margin:0;font-size:.9rem">An influential model with a real anatomical basis, but its training implications go well beyond what's established.</p></div>
+  </div>
+
+  <p>Knowing which claims are solid and which are convention is itself part of trainer-level knowledge — arguably the part that separates a good trainer from one who repeats their certification slides.</p>
+
+  <h3>Self-check</h3>
+  <div id="quiz"></div>
+</section>
+</div><!-- /anatView -->
+
+<div id="sciView" hidden>
+
+<!-- ═══════════ B1 ═══════════ -->
+<section class="mod" id="s1">
+  <p class="mod-no">Training science 01</p>
+  <h2>Why bodies change at all</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Your body doesn't improve because you exercised. It improves because you gave it a reason to, and then recovered. Training is a demand; adaptation is the reply.</p>
+    <p>Four or five principles govern the whole thing. Everything else in training — every programme, every argument online — is detail stacked on top of these.</p>
+  </div>
+
+  <h3>The principles</h3>
+  <div class="grid2">
+    <div><h3>Progressive overload</h3><p style="margin:0;font-size:.9rem">The demand must keep growing, or adaptation stops. Not necessarily more weight — more reps, more sets, better control, less rest, more range all count. <span class="ev ev-s">settled</span></p></div>
+    <div><h3>Specificity (SAID)</h3><p style="margin:0;font-size:.9rem">You adapt specifically to what you impose. Training heavy singles makes you good at heavy singles. Sets of 15 make you good at sets of 15. Overlap exists but it isn't total. <span class="ev ev-s">settled</span></p></div>
+    <div><h3>Individual variation</h3><p style="margin:0;font-size:.9rem">The same programme produces noticeably different results in different people. Published averages describe a group, never you. <span class="ev ev-s">settled</span></p></div>
+    <div><h3>Reversibility</h3><p style="margin:0;font-size:.9rem">Adaptations fade when the demand stops — though strength and muscle are retained longer than most people fear, and return faster than they were built.</p></div>
+    <div><h3>Fatigue management</h3><p style="margin:0;font-size:.9rem">Every session produces both fitness and fatigue. Fatigue masks fitness, which is why you sometimes feel weakest right before you peak.</p></div>
+    <div><h3>Adherence beats optimality</h3><p style="margin:0;font-size:.9rem">Not a textbook principle, but the one that decides most outcomes. A good programme you follow beats a perfect one you abandon.</p></div>
+  </div>
+
+  <h3>Stimulus, fatigue, adaptation</h3>
+  <figure class="fig">
+    <svg viewBox="0 0 440 200" role="img" aria-label="Stimulus, fatigue and adaptation over time">
+      <line class="rule" x1="30" y1="120" x2="420" y2="120"/>
+      <text class="lbl" x="30" y="140">session</text>
+      <text class="lbl" x="150" y="140">fatigue</text>
+      <text class="lbl" x="250" y="140">recovery</text>
+      <text class="lbl" x="340" y="140">adapted</text>
+      <text class="lbl" x="4" y="60" transform="rotate(-90 12 70)">capacity</text>
+      <path d="M30 120 L70 120 L120 160 Q200 172 260 120 Q320 76 380 86 L420 88"
+            stroke="var(--muscle)" stroke-width="3" fill="none"/>
+      <line x1="30" y1="120" x2="420" y2="120" stroke="var(--joint)" stroke-width="1" stroke-dasharray="4 4"/>
+      <text class="lbl" x="300" y="70" fill="var(--joint)">new baseline</text>
+      <line x1="70" y1="104" x2="70" y2="130" stroke="var(--ink-soft)" stroke-width="2"/>
+      <text class="lbl" x="56" y="98">training</text>
+    </svg>
+    <figcaption>This is the classic supercompensation curve. It's a <em>teaching model</em> <span class="ev ev-a">model</span> — real training produces overlapping waves of fitness and fatigue rather than one tidy dip and rebound, and the timings vary by person, tissue and session. Use it to understand why rest matters, not to time your sessions to the hour.</figcaption>
+  </figure>
+
+  <div class="note"><strong>On "minimum effective volume" and "maximum recoverable volume".</strong> <span class="ev ev-c">contested</span> These are popular framings from online coaching rather than established, measurable quantities. The underlying idea — there's a floor below which nothing happens and a ceiling above which you can't recover — is reasonable. The specific set numbers attached to them are not measurements of anything.</div>
+</section>
+
+<!-- ═══════════ B2 ═══════════ -->
+<section class="mod" id="s2">
+  <p class="mod-no">Training science 02</p>
+  <h2>Programme design</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>A programme is just a set of decisions, made once, written down — so you're not deciding what to do while standing in the gym.</p>
+    <p>This module is the list of decisions and the sensible defaults for each. Anatomy told you what an exercise does; this is what to do with that over three months.</p>
+  </div>
+
+  <h3>Step one: the needs analysis</h3>
+  <p>Before any sets and reps, six questions. Trainers ask these of a client; ask them of yourself.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Question</th><th>Why it changes the answer</th></tr></thead>
+    <tbody>
+      <tr><td><b>What's the goal?</b></td><td>Strength, size, endurance, health, a sport — each pulls the variables differently</td></tr>
+      <tr><td><b>Training age?</b></td><td>A beginner progresses on almost anything; an advanced lifter needs structure</td></tr>
+      <tr><td><b>Days and minutes available?</b></td><td>Decides the split before anything else does</td></tr>
+      <tr><td><b>Equipment?</b></td><td>Decides exercise selection, not programme quality</td></tr>
+      <tr><td><b>Injury history and limitations?</b></td><td>Changes selection and loading; sometimes means referral first</td></tr>
+      <tr><td><b>What do you actually enjoy?</b></td><td>The adherence question. Routinely skipped, routinely the reason programmes fail</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Step two: the variables</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Variable</th><th>What it controls</th></tr></thead>
+    <tbody>
+      <tr><td><b>Exercise selection</b></td><td>Which joints and muscles get loaded, and through what range</td></tr>
+      <tr><td><b>Exercise order</b></td><td>What gets your freshest effort. Big and technical first, small and isolated last</td></tr>
+      <tr><td><b>Load</b></td><td>Usually expressed as a percentage of your one-rep max, or by reps-in-reserve</td></tr>
+      <tr><td><b>Sets &amp; reps</b></td><td>Together these set the total work and where it sits on the strength–endurance spectrum</td></tr>
+      <tr><td><b>Rest</b></td><td>Longer rest preserves performance on later sets; shorter rest raises metabolic demand</td></tr>
+      <tr><td><b>Tempo</b></td><td>Time under tension and control. Useful, frequently over-prescribed</td></tr>
+      <tr><td><b>Frequency</b></td><td>How often each muscle or pattern is trained per week</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Build a starting template</h3>
+  <figure class="fig">
+    <p style="font-size:.85rem;color:var(--ink-soft);margin:0 0 .6rem">Pick a goal and how many days you can train.</p>
+    <div class="ctrl" id="goalCtrl">
+      <button data-g="str" aria-pressed="true">Strength</button>
+      <button data-g="hyp" aria-pressed="false">Muscle size</button>
+      <button data-g="gen" aria-pressed="false">General fitness</button>
+    </div>
+    <div class="ctrl" id="daysCtrl">
+      <button data-d="2" aria-pressed="false">2 days</button>
+      <button data-d="3" aria-pressed="true">3 days</button>
+      <button data-d="4" aria-pressed="false">4 days</button>
+      <button data-d="5" aria-pressed="false">5 days</button>
+    </div>
+    <div class="readout" id="tmplOut"></div>
+    <figcaption>This is a <strong>starting template, not a prescription</strong>. The rep and rest ranges are conventional figures from the training literature <span class="ev ev-a">approximate</span> and sit inside wider ranges that also work. It knows nothing about your injury history, schedule or preferences — the needs analysis above is the part a template can't do.</figcaption>
+  </figure>
+
+  <div class="note"><strong>Exercise order has one real rule.</strong> Whatever matters most to your goal goes first, while you're fresh. Everything else — "compounds before isolation", "large before small" — is that rule wearing a costume.</div>
+</section>
+
+<!-- ═══════════ B3 ═══════════ -->
+<section class="mod" id="s3">
+  <p class="mod-no">Training science 03</p>
+  <h2>Progression and periodisation</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Adding weight every session works beautifully — until it stops, usually a few months in. Periodisation is just having a plan for what happens then.</p>
+    <p>It sounds like an advanced topic. It isn't. It's the difference between a programme and a list of exercises.</p>
+  </div>
+
+  <h3>Ways to progress</h3>
+  <p>Load is the obvious one and the least sustainable on its own. The full list: more weight, more reps, more sets, shorter rest for the same work, better range or control, or the same session performed with less effort than last time.</p>
+  <p><strong>Double progression</strong> is the simplest workable method: pick a rep range, say 8–12. Add reps each week until you hit 12 on every set, then add weight and drop back to 8. Repeat. A beginner can run this for a long time without needing anything more complicated.</p>
+
+  <h3>Periodisation models</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Model</th><th>How it works</th><th>Suits</th></tr></thead>
+    <tbody>
+      <tr><td><b>Linear</b></td><td>Volume falls and intensity rises over weeks or months</td><td>Beginners; a single peak</td></tr>
+      <tr><td><b>Undulating</b></td><td>Rep ranges vary within the week or between sessions</td><td>Intermediates; general goals</td></tr>
+      <tr><td><b>Block</b></td><td>Distinct phases each emphasising one quality in turn</td><td>Advanced; a competition date</td></tr>
+      <tr><td><b>Autoregulated</b></td><td>Load adjusts session to session based on how you actually feel</td><td>Anyone with inconsistent sleep, stress or schedule</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><strong>Worth knowing.</strong> <span class="ev ev-c">contested</span> The evidence that any one periodisation model clearly beats another, once total volume and intensity are matched, is weaker than how confidently it's taught. What does appear to matter is having <em>some</em> structure and progressing it. Don't agonise over picking the right model.</div>
+
+  <h3>Autoregulation: the RPE and RIR scale</h3>
+  <p>Rather than prescribing a fixed percentage, you prescribe an effort level. RIR means <em>reps in reserve</em> — how many more you could have done. RPE is the same idea inverted on a 1–10 scale.</p>
+  <figure class="fig">
+    <div class="scale" id="rirScale">
+      <button data-r="5" aria-pressed="false">5+</button>
+      <button data-r="4" aria-pressed="false">4</button>
+      <button data-r="3" aria-pressed="false">3</button>
+      <button data-r="2" aria-pressed="true">2</button>
+      <button data-r="1" aria-pressed="false">1</button>
+      <button data-r="0" aria-pressed="false">0</button>
+    </div>
+    <div class="readout" id="rirOut"></div>
+    <figcaption>Judging reps-in-reserve is a skill that takes practice, and beginners consistently underestimate how many they have left <span class="ev ev-a">commonly reported</span>. It gets more accurate the closer you are to failure, which is part of why most set prescriptions sit in the 0–3 range.</figcaption>
+  </figure>
+
+  <h3>Deloads</h3>
+  <p>A planned easy week — typically reduced volume, sometimes reduced intensity — to let accumulated fatigue clear. Common guidance is every 4–8 weeks, or when performance stalls across several sessions, sleep worsens, or motivation drops noticeably. The exact scheduling is more convention than established science <span class="ev ev-a">convention</span>; the principle that fatigue accumulates and needs clearing is not.</p>
+</section>
+
+<!-- ═══════════ B4 ═══════════ -->
+<section class="mod" id="s4">
+  <p class="mod-no">Training science 04</p>
+  <h2>Exercise physiology</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Where the energy for a set actually comes from, and what quietly changes inside you over months of training.</p>
+    <p>You don't need the biochemistry. You need to know which system powers a 5-second effort versus a 5-minute one, because that's what makes rest periods and rep ranges make sense instead of feeling arbitrary.</p>
+  </div>
+
+  <h3>The three energy systems</h3>
+  <p>All three run all the time. The question is only which one dominates — and that's decided almost entirely by how long and how hard the effort is.</p>
+
+  <figure class="fig">
+    <div class="slider-row">
+      <label for="energyRange" style="font-size:.85rem">Effort duration</label>
+      <input type="range" id="energyRange" min="0" max="100" value="12" step="1">
+      <span class="val" id="energyVal">10 s</span>
+    </div>
+    <div class="ebars">
+      <div class="ebrow"><span>Phosphocreatine</span><span class="bar"><i id="eb1" style="width:0%"></i></span><span class="pc" id="ep1">0%</span></div>
+      <div class="ebrow"><span>Glycolytic</span><span class="bar"><i id="eb2" style="width:0%"></i></span><span class="pc" id="ep2">0%</span></div>
+      <div class="ebrow"><span>Oxidative</span><span class="bar"><i id="eb3" style="width:0%"></i></span><span class="pc" id="ep3">0%</span></div>
+    </div>
+    <div class="readout" id="energyOut"></div>
+    <figcaption>These proportions are a <strong>schematic approximation</strong> <span class="ev ev-a">approximate</span>, drawn to show the shape of the handover rather than exact physiological values — published curves differ, and real contribution depends on intensity and training status too. The teaching point is the shape: the handover is gradual, and all three are always contributing.</figcaption>
+  </figure>
+
+  <h3>Muscle fibre types</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Type</th><th>Character</th><th>Recruited when</th></tr></thead>
+    <tbody>
+      <tr><td><b>Type I</b> (slow)</td><td>Fatigue-resistant, lower force, highly oxidative</td><td>Low-force work, and first in almost any effort</td></tr>
+      <tr><td><b>Type IIa</b></td><td>Intermediate — fast but reasonably fatigue-resistant</td><td>Moderate to high force</td></tr>
+      <tr><td><b>Type IIx</b> (fast)</td><td>Highest force and speed, fatigues quickly</td><td>Maximal or near-maximal effort</td></tr>
+    </tbody>
+  </table></div>
+  <p>Recruitment follows the <strong>size principle</strong>: smaller, slower motor units fire first, larger faster ones join as force demand rises. <span class="ev ev-s">settled</span> This is why a set taken close to failure recruits high-threshold fibres even with a moderate weight — fatigue forces the recruitment that heavy load would have forced immediately.</p>
+  <p>Fibre type proportions are substantially genetic and shift only modestly with training, mostly between the two fast subtypes. You cannot train your way into someone else's physiology.</p>
+
+  <h3>What training changes</h3>
+  <div class="grid2">
+    <div><h3>Resistance training</h3><p style="margin:0;font-size:.9rem">Early gains are largely neural — better recruitment and coordination — before much tissue is added. Then muscle cross-sectional area increases, along with tendon stiffness and bone density.</p></div>
+    <div><h3>Endurance training</h3><p style="margin:0;font-size:.9rem">Larger stroke volume, more capillaries, more and bigger mitochondria, improved lactate clearance. VO₂max rises early then plateaus; lactate threshold keeps improving far longer.</p></div>
+  </div>
+
+  <div class="note"><strong>Two things commonly taught as fact.</strong> <span class="ev ev-c">contested</span> First, <em>mechanical tension</em> is widely accepted as the primary driver of muscle growth, but the additional roles of metabolic stress and muscle damage are actively argued over. Second, the idea that post-workout testosterone and growth-hormone spikes drive hypertrophy has been substantially challenged — you'll still see it taught, and training programmes sold on it.</div>
+</section>
+
+<!-- ═══════════ B5 ═══════════ -->
+<section class="mod" id="s5">
+  <p class="mod-no">Training science 05</p>
+  <h2>Recovery, sleep and fatigue</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Training is the stimulus. Recovery is where the actual change happens. Most people manage the first carefully and the second not at all.</p>
+    <p>If you only improve one thing outside the gym, make it sleep. Nothing else in this module comes close.</p>
+  </div>
+
+  <h3>The hierarchy</h3>
+  <p><strong>Sleep</strong> first, by a wide margin — duration and consistency both. <strong>Total food intake</strong> second. <strong>Life stress</strong> third, and it's a real training variable: a brutal work week genuinely reduces what you can recover from. Everything else — ice baths, massage guns, compression, foam rolling — sits far below these, whatever the marketing suggests.</p>
+
+  <h3>Fatigue is not one thing</h3>
+  <div class="grid2">
+    <div><h3>Peripheral</h3><p style="margin:0;font-size:.9rem">In the muscle itself. Clears relatively quickly — hours to a couple of days.</p></div>
+    <div><h3>Central / neural</h3><p style="margin:0;font-size:.9rem">In the nervous system's drive to the muscle. Accumulates from heavy, near-maximal work and clears more slowly.</p></div>
+    <div><h3>Connective tissue</h3><p style="margin:0;font-size:.9rem">Tendon and ligament adapt more slowly than muscle <span class="ev ev-a">approximate timelines</span> — which is why strength can outrun joint readiness in a fast-progressing beginner.</p></div>
+    <div><h3>Psychological</h3><p style="margin:0;font-size:.9rem">Motivation and willingness to push. Real, measurable in performance, and routinely dismissed.</p></div>
+  </div>
+
+  <h3>Overreaching and overtraining</h3>
+  <p><strong>Functional overreaching</strong> is a short-term performance dip followed by a rebound — a normal, often deliberate part of hard training. <strong>Non-functional overreaching</strong> is a dip that doesn't rebound on schedule. <strong>Overtraining syndrome</strong> is a much rarer, longer-lasting state involving performance, mood, sleep and health. The three are often conflated, and genuine overtraining syndrome is far less common in recreational lifters than the word suggests.</p>
+
+  <div class="note"><strong>Soreness is a bad metric.</strong> Delayed-onset muscle soreness tracks novelty and eccentric load much more than it tracks whether a session was productive. A good session often isn't sore; a sore session often wasn't productive. <span class="ev ev-s">settled</span></div>
+
+  <div class="note"><strong>One worth verifying yourself.</strong> <span class="ev ev-c">contested</span> There are reported findings that regular cold-water immersion straight after resistance training may blunt some strength and hypertrophy adaptations. I'm not confident enough in the details to state it flatly — treat it as a reason to be cautious about habitual post-lifting ice baths, and check current primary sources if it matters to you.</div>
+</section>
+
+<!-- ═══════════ B6 ═══════════ -->
+<section class="mod" id="s6">
+  <p class="mod-no">Training science 06</p>
+  <h2>Nutrition fundamentals</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>A small number of things matter a great deal, and an enormous number of things matter very little. Most nutrition content inverts that ratio because the small stuff is easier to sell.</p>
+    <p>This module covers the fundamentals a trainer is expected to know — and, just as importantly, where a trainer's authority ends.</p>
+  </div>
+
+  <h3>What matters, in order</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Level</th><th>What it is</th><th>Roughly how much it matters</th></tr></thead>
+    <tbody>
+      <tr><td><b>1. Total energy</b></td><td>How much you eat relative to what you use</td><td>Decides whether weight goes up or down. Dominant.</td></tr>
+      <tr><td><b>2. Protein</b></td><td>Total daily intake, spread across meals</td><td>Large, for anyone training</td></tr>
+      <tr><td><b>3. Carbs &amp; fat split</b></td><td>How the rest of the energy divides</td><td>Moderate; largely preference and training demand</td></tr>
+      <tr><td><b>4. Food quality &amp; micronutrients</b></td><td>Whole foods, fibre, vitamins, minerals</td><td>Large for health, smaller for training outcomes specifically</td></tr>
+      <tr><td><b>5. Timing</b></td><td>When you eat relative to training</td><td>Small — much smaller than commonly marketed</td></tr>
+      <tr><td><b>6. Supplements</b></td><td>Everything in a tub</td><td>Smallest. See below.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Protein</h3>
+  <p>Figures around <strong>1.6–2.2 g per kg of bodyweight per day</strong> are commonly cited for people doing resistance training <span class="ev ev-a">approximate</span>, with diminishing returns above that. Spreading it across three or four meals is generally recommended over one large serving. These are population-level starting figures from the training literature — I'd verify current recommendations from a primary source, and they're not individualised to anyone's circumstances.</p>
+
+  <h3>Supplements worth knowing about</h3>
+  <p>The honest list is short. <strong>Creatine monohydrate</strong> and <strong>caffeine</strong> have the most consistent evidence behind them for training performance. Vitamin D and omega-3 may matter where someone is genuinely deficient — which is a medical question, not a training one. Almost everything else sold in the category has weak, mixed, or industry-funded evidence.</p>
+
+  <div class="note"><strong>Scope of practice — read this one carefully.</strong> In most jurisdictions a personal trainer may give general nutrition guidance but may <em>not</em> prescribe diets, treat medical conditions, or manage nutrition for a diagnosed illness. That's a registered dietitian's role. I don't have confident knowledge of how this is regulated in India specifically, so if you ever intend to advise others, verify the position there directly rather than assuming it matches US or UK rules.</div>
+
+  <p style="font-size:.9rem;color:var(--ink-soft)">Nothing in this module is dietary advice for any individual, and it deliberately contains no calculator. Personal targets belong with a qualified professional who knows your circumstances.</p>
+</section>
+
+<!-- ═══════════ B7 ═══════════ -->
+<section class="mod" id="s7">
+  <p class="mod-no">Training science 07</p>
+  <h2>Assessment and goal setting</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Before you program anything you need two things: a reason to believe training is safe to start, and a number to measure against later.</p>
+    <p>That's genuinely most of it. The elaborate screening protocols you'll see sold are a much smaller part of the picture than they're presented as.</p>
+  </div>
+
+  <h3>Readiness screening</h3>
+  <p>A health history and a readiness questionnaire — the PAR-Q is the best-known <span class="ev ev-s">widely used</span> — exist to catch the small number of people who should speak to a doctor before starting, not to design their training. The questions cover cardiac history, chest pain, dizziness, joint problems and current medication. Anything flagged means referral before progression, not refusal to train.</p>
+
+  <h3>Baselines worth recording</h3>
+  <div class="grid2">
+    <div><h3>Strength</h3><p style="margin:0;font-size:.9rem">A tested or estimated max on two or three main lifts. Estimation formulas from a rep-max are convenient but approximate, and get less accurate above roughly 10 reps <span class="ev ev-a">approximate</span>.</p></div>
+    <div><h3>Body measures</h3><p style="margin:0;font-size:.9rem">Weight trend over weeks rather than single readings; circumference measures. Body-fat estimates from consumer devices carry large error margins — treat them as trend lines at best.</p></div>
+    <div><h3>Capacity</h3><p style="margin:0;font-size:.9rem">A simple repeatable cardio test, or just resting heart rate and how a known effort feels.</p></div>
+    <div><h3>Movement</h3><p style="margin:0;font-size:.9rem">Ankle dorsiflexion, overhead reach, single-leg control. Useful for choosing starting exercises.</p></div>
+  </div>
+
+  <div class="note"><strong>On movement screens.</strong> <span class="ev ev-c">contested</span> Screening systems are widely taught as injury-prediction tools. The evidence for that predictive claim, and for the idea that correcting screen findings prevents injury, is considerably weaker than certification material implies. Screens are reasonable for choosing where to start someone. They're much shakier as prophecy.</div>
+
+  <h3>Goal setting that survives contact with reality</h3>
+  <p>Outcome goals ("add 20 kg to my squat") are motivating but not controllable. Process goals ("train three times a week for eight weeks") are controllable and are what actually produce the outcome. Good practice is to set the outcome goal, then convert it immediately into the process goals that would cause it, and track only those.</p>
+  <p>Re-test baselines every 8–12 weeks. More often than that and normal fluctuation drowns the signal.</p>
+</section>
+
+<!-- ═══════════ B8 ═══════════ -->
+<section class="mod" id="s8">
+  <p class="mod-no">Training science 08</p>
+  <h2>Coaching, cueing and behaviour change</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Knowing the right thing to do and getting a person — including yourself — to actually do it are two completely different skills.</p>
+    <p>Certifications cover the second one thinly, and it's the one that decides almost every real outcome. This module is the half that gets skipped.</p>
+  </div>
+
+  <h3>How people learn a movement</h3>
+  <p>Beginners can absorb roughly <strong>one cue at a time</strong>. A list of five corrections produces worse performance than one, because attention is the bottleneck. Demonstrate, give one cue, let them try, then adjust. Feedback after every single rep also tends to slow learning in the long run — the learner stops self-correcting and waits to be told.</p>
+
+  <h3>Internal versus external cues</h3>
+  <p>An <em>internal</em> cue directs attention to the body; an <em>external</em> cue directs it to the effect of the movement on the environment. There's a reasonably consistent body of work suggesting external cues often produce better performance and retention, though the size of the advantage is debated and it may matter less for isolation work where the goal genuinely is to feel one muscle. <span class="ev ev-c">effect size contested</span></p>
+  <div class="cue">
+    <div class="bad"><b>Internal</b>"Squeeze your glutes at the top"</div>
+    <div class="good"><b>External</b>"Drive your hips toward the wall in front of you"</div>
+    <div class="bad"><b>Internal</b>"Push through your quads"</div>
+    <div class="good"><b>External</b>"Push the floor away from you"</div>
+    <div class="bad"><b>Internal</b>"Retract your scapulae"</div>
+    <div class="good"><b>External</b>"Pull your elbows into your back pockets"</div>
+    <div class="bad"><b>Internal</b>"Brace your core"</div>
+    <div class="good"><b>External</b>"Act like you're about to be punched in the stomach"</div>
+  </div>
+
+  <h3>Behaviour change</h3>
+  <div class="grid2">
+    <div><h3>Self-efficacy</h3><p style="margin:0;font-size:.9rem">Belief that you can do the thing is one of the stronger predictors of whether you will. It's built by early, achievable wins — which is an argument for starting easier than feels necessary.</p></div>
+    <div><h3>Identity over outcome</h3><p style="margin:0;font-size:.9rem">"I'm someone who trains on Tuesdays" outlasts "I want to lose 10 kg". Outcome goals end; identities don't.</p></div>
+    <div><h3>Friction</h3><p style="margin:0;font-size:.9rem">Gym distance, bag packed, session written down in advance. Reducing small frictions reliably beats increasing motivation.</p></div>
+    <div><h3>Lapse planning</h3><p style="margin:0;font-size:.9rem">Decide in advance what a missed week means. People who treat a lapse as data continue; people who treat it as failure quit.</p></div>
+  </div>
+  <p>The clinical technique behind much of this is <strong>motivational interviewing</strong> — drawing someone's own reasons for change out of them rather than supplying yours. Even a crude version of it outperforms being told what to do.</p>
+</section>
+
+<!-- ═══════════ B9 ═══════════ -->
+<section class="mod" id="s9">
+  <p class="mod-no">Training science 09</p>
+  <h2>Pain, injury and who you can train</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>This module is not about treating anything. It's about recognising what isn't yours to treat, and about not making things worse with careless language.</p>
+    <p>The single most useful idea here: tissue is adaptable, and pain is not a reliable readout of damage.</p>
+  </div>
+
+  <h3>Load management</h3>
+  <p>Tissue adapts to load applied gradually and fails when load outpaces adaptation. Most non-traumatic training complaints are a dose problem — too much, too soon, too fast a jump — rather than a technique flaw or a weak muscle. The first question for a niggle is almost always "what changed recently?"</p>
+
+  <h3>Pain, briefly and carefully</h3>
+  <p>Pain is produced by the nervous system, and correlates imperfectly with tissue damage. Imaging findings like disc bulges, cuff tears and cartilage changes appear in large numbers of entirely pain-free people, and their prevalence rises with age. <span class="ev ev-s">well replicated</span> This cuts both ways: it doesn't mean pain is imaginary, and it doesn't mean a scan finding is meaningless. It means a finding alone doesn't explain a symptom.</p>
+  <p>Practical consequence for anyone coaching: avoid frightening, mechanical language — "your spine is unstable", "your hips are out of alignment". It changes how people move and how much they do, generally for the worse.</p>
+
+  <div class="note"><strong>Refer, don't diagnose.</strong> Pain that is severe, that wakes someone at night, that follows a specific traumatic incident, that comes with numbness, weakness, or loss of function, or that simply isn't improving — these go to a qualified clinician. No certification makes a trainer qualified to diagnose. This module doesn't either, and nothing here is medical advice.</div>
+
+  <h3>Populations needing modification</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Group</th><th>Main considerations</th></tr></thead>
+    <tbody>
+      <tr><td><b>Older adults</b></td><td>Resistance training is strongly supported here, not contraindicated. Emphasis on strength, power and balance; slower progression, longer warm-ups</td></tr>
+      <tr><td><b>Pregnancy &amp; postpartum</b></td><td>Generally encouraged with medical clearance; specific modifications by trimester and after delivery. Specialist territory — refer</td></tr>
+      <tr><td><b>Youth</b></td><td>Resistance training is safe when supervised and appropriately loaded; the old "stunts growth" claim is not supported</td></tr>
+      <tr><td><b>Hypertension</b></td><td>Breath-holding and very heavy straining need care; medical clearance first</td></tr>
+      <tr><td><b>Type 2 diabetes</b></td><td>Exercise is part of standard management, but interacts with medication and blood glucose. Coordinate with their clinician</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:.9rem;color:var(--ink-soft)">Each row above is a summary, not a protocol. Every one of these groups has its own literature and its own clearance requirements.</p>
+</section>
+
+<!-- ═══════════ B10 ═══════════ -->
+<section class="mod" id="s10">
+  <p class="mod-no">Training science 10</p>
+  <h2>Reading the evidence yourself</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Fitness has an unusually high ratio of confident claims to good evidence. This module is the skill that lets you sort them yourself, instead of trusting whoever sounds most certain.</p>
+    <p>It's the most durable thing in this whole app. Specific recommendations age; the ability to check them doesn't.</p>
+  </div>
+
+  <h3>What makes a finding trustworthy</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Ask</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><b>How many people, for how long?</b></td><td>Training studies are often small and short. Twelve people over six weeks tells you less than the headline suggests</td></tr>
+      <tr><td><b>Who were they?</b></td><td>Untrained beginners improve on almost anything. Findings in beginners rarely transfer to trained lifters</td></tr>
+      <tr><td><b>What was measured?</b></td><td>Muscle activation (EMG) in one session is not muscle growth over months. Acute markers are not outcomes</td></tr>
+      <tr><td><b>How big was the effect?</b></td><td>"Statistically significant" means unlikely to be chance, not meaningfully large. Ask for the size, not the p-value</td></tr>
+      <tr><td><b>Compared with what?</b></td><td>Better than nothing is a low bar. Better than the normal alternative is the useful comparison</td></tr>
+      <tr><td><b>Who paid?</b></td><td>Supplement and equipment funding doesn't invalidate a study, but it changes how much weight a single result deserves</td></tr>
+      <tr><td><b>Does it replicate?</b></td><td>One study is a hypothesis. A systematic review of many is evidence</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Claim checker</h3>
+  <p>Twelve things you'll hear. Decide what you think first, then reveal.</p>
+  <div id="claims"></div>
+
+  <div class="note"><strong>A standing caution about this app.</strong> My information ends in mid-2026, and training science moves. Anything here marked <span class="ev ev-a">approximate</span> is a figure to verify from a primary source; anything marked <span class="ev ev-c">contested</span> is argued over by people who know far more than a summary can convey. Where I've stated something flatly, I'm confident — but the habit this module teaches should be applied to this app too.</div>
+</section>
+
+<!-- ═══════════ B11 ═══════════ -->
+<section class="mod" id="s11">
+  <p class="mod-no">Training science 11</p>
+  <h2>Pain during training — reading the signals</h2>
+  <div class="plain"><b>In plain words</b>
+    <p>Not everything that hurts is a problem, and not everything that's a problem hurts much. The useful skill isn't toughness or caution — it's telling the two apart.</p>
+    <p>This module is about <em>recognising</em> what you're feeling and knowing what to do next. It is not physiotherapy, and it deliberately contains no treatment protocols. Think of it as the triage step that happens before a professional gets involved.</p>
+  </div>
+
+  <h3>Sort the sensation</h3>
+  <p>Tap what you're feeling. Answer for yourself first.</p>
+  <figure class="fig">
+    <div class="ctrl" id="sensCtrl"></div>
+    <div class="readout" id="sensOut"></div>
+    <figcaption>This is a <strong>general educational sorter</strong>, not an assessment of anything you're experiencing. It can't see you, and the same sensation can mean different things in different people. Anything in the "see someone" category means a qualified clinician — physiotherapist, sports physician, or your doctor.</figcaption>
+  </figure>
+
+  <h3>The sensations that are usually fine</h3>
+  <div class="tw"><table>
+    <thead><tr><th>What it feels like</th><th>What's happening</th><th>Timing</th></tr></thead>
+    <tbody>
+      <tr><td><b>Burning</b> in the working muscle</td><td>Metabolite accumulation during the set</td><td>Builds through the set, fades within a minute or two of stopping</td></tr>
+      <tr><td><b>The pump</b> — fullness, tightness</td><td>Fluid shift into the working muscle</td><td>During and shortly after; settles within the hour</td></tr>
+      <tr><td><b>Stretch sensation</b></td><td>Tissue under lengthening tension</td><td>At end range; should be tolerable, never sharp</td></tr>
+      <tr><td><b>Muscle fatigue</b> — heaviness, shaking</td><td>The muscle running out of capacity</td><td>Late in a set; normal</td></tr>
+      <tr><td><b>DOMS</b> — diffuse, tender to press</td><td>Delayed-onset soreness, strongest after novel or eccentric work</td><td>Starts 12–24 h later, peaks around 24–72 h <span class="ev ev-a">approximate</span>, eases with gentle movement</td></tr>
+    </tbody>
+  </table></div>
+  <p>The common thread: these sit <strong>in the muscle belly</strong>, are diffuse rather than pinpoint, build predictably with effort, and ease when you stop.</p>
+
+  <h3>The sensations that deserve attention</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Signal</th><th>Why it's different</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sharp or stabbing</b> during a specific movement</td><td>Not a fatigue sensation. Stop that movement — not necessarily the session</td></tr>
+      <tr><td><b>Pain at the joint line</b> rather than the muscle</td><td>Muscle soreness doesn't localise to a joint. Worth modifying and watching</td></tr>
+      <tr><td><b>Pinching</b> at one specific end range</td><td>Often positional and responds to changing the range, grip or stance</td></tr>
+      <tr><td><b>Pain that worsens</b> set over set</td><td>Normal soreness is stable or improves as you warm up. Escalation is a signal</td></tr>
+      <tr><td><b>Still there in 48–72 h</b>, unchanged</td><td>DOMS follows a curve and resolves. Something that plateaus isn't DOMS</td></tr>
+      <tr><td><b>One side only</b>, consistently</td><td>Symmetrical work producing asymmetrical pain is worth investigating</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><strong>Signals that mean stop and see someone — not wait and see.</strong> Pain following a distinct traumatic moment (a pop, a tear, a sudden giving way). Numbness, pins and needles, or shooting pain down a limb. Weakness you can't explain by fatigue. Swelling, a joint locking or giving way, or visible deformity. Pain that wakes you at night or is present at rest. Pain with fever, or with chest symptoms or breathlessness. None of these are things to train through or diagnose from an app.</div>
+
+  <h3>How to handle the grey zone</h3>
+  <p>Most training niggles aren't emergencies and aren't nothing. The modern approach is <strong>relative rest</strong> rather than complete rest: keep training, change the dose.</p>
+  <div class="grid2">
+    <div><h3>Change the range</h3><p style="margin:0;font-size:.9rem">Work in the range that doesn't provoke it. A box squat, a partial, a different depth — you keep the stimulus and skip the painful arc.</p></div>
+    <div><h3>Change the load</h3><p style="margin:0;font-size:.9rem">Lighter with more reps often stays comfortable while keeping the pattern trained.</p></div>
+    <div><h3>Substitute the exercise</h3><p style="margin:0;font-size:.9rem">Same pattern, different setup: trap bar instead of barbell, dumbbells instead of bar, machine instead of free weight.</p></div>
+    <div><h3>Train everything else</h3><p style="margin:0;font-size:.9rem">A sore shoulder is not a reason to stop training legs. Total shutdown costs far more than it protects.</p></div>
+  </div>
+
+  <p>A commonly used self-monitoring approach in rehab settings is a <strong>traffic-light model</strong>: mild discomfort during a movement is acceptable, it shouldn't worsen as you go, and it should settle back to baseline by the following morning. If it's worse the next day, the dose was too high. This framework is widely used clinically, particularly in tendon rehabilitation <span class="ev ev-a">clinical convention</span> — I'd treat the specific thresholds as a rule of thumb rather than a validated rule, and anything persistent belongs with a clinician who can set it for your situation.</p>
+
+  <h3>What's changed in recovery thinking</h3>
+  <p>RICE — rest, ice, compression, elevation — is the acronym most people learned, and it has been substantially revised. The criticism is that prolonged rest and aggressive icing may interfere with the inflammatory process that healing depends on. A proposed replacement framework published in sports-medicine literature uses the acronyms <strong>PEACE and LOVE</strong>, emphasising protection and early gentle loading, avoiding anti-inflammatory suppression early on, education, and optimism, rather than extended immobilisation. <span class="ev ev-a">I'm fairly confident this framework exists and is broadly as described, but I'd verify the detail from the original source before relying on it.</span></p>
+  <p>The durable takeaway, which is less contested than any acronym: <em>early, gentle, graded loading generally beats extended rest</em> for most soft-tissue training injuries. How early and how gentle is the clinician's call.</p>
+
+  <h3>Recovery methods, honestly ranked</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Method</th><th>Evidence for aiding recovery</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sleep</b></td><td>Strongest by a distance. <span class="ev ev-s">settled</span></td></tr>
+      <tr><td><b>Adequate food and protein</b></td><td>Strong</td></tr>
+      <tr><td><b>Gentle movement / light activity</b></td><td>Reasonable; helps soreness and mood</td></tr>
+      <tr><td><b>Managing life stress</b></td><td>Reasonable and underrated</td></tr>
+      <tr><td><b>Massage, foam rolling</b></td><td>May reduce perceived soreness short-term; little evidence of changed tissue or faster adaptation <span class="ev ev-c">contested</span></td></tr>
+      <tr><td><b>Stretching to prevent soreness</b></td><td>Not supported <span class="ev ev-c">contested</span></td></tr>
+      <tr><td><b>Cold-water immersion</b></td><td>Mixed; may blunt strength and hypertrophy adaptations when used habitually after lifting <span class="ev ev-c">contested</span></td></tr>
+      <tr><td><b>Compression garments, percussion guns, cupping</b></td><td>Weak or mostly perceptual <span class="ev ev-c">contested</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Where a trainer stops and a physiotherapist starts</h3>
+  <p>A trainer manages load, technique, exercise selection and progression — all of which matter enormously for both preventing and working around problems. A physiotherapist assesses, diagnoses, and treats. The handover point is simple: the moment you're trying to work out <em>what is wrong</em> rather than <em>how much to do</em>, it's outside a trainer's scope.</p>
+  <p style="font-size:.9rem;color:var(--ink-soft)">Module 09 covers the broader pain-science background this module sits on. Neither is medical advice, and neither can assess your situation. If something is hurting and isn't resolving, see a physiotherapist or doctor — that's the correct answer, not a disclaimer.</p>
+</section>
+
+</div><!-- /sciView -->
+
+<section class="mod" id="planView" hidden>
+  <p class="mod-no">Study plan</p>
+  <h2>Forty days, about twelve minutes each</h2>
+  <p>Eight weeks, five study days a week, two days off. Weeks 1–4 cover anatomy and mechanics; weeks 5–8 cover training science. Each day gives you one target to read and one short drill. The drill is the part that makes it stick — reading alone fades fast.</p>
+  <p>If you miss a day, just pick up where you left off. Don't double up; the spacing is doing work. Total commitment is roughly eight hours spread over two months.</p>
+
+  <div class="prog">
+    <div class="prog-top">
+      <span class="prog-n"><b id="progN">0</b> of <span id="progTotal">40</span> days done</span>
+      <button type="button" id="progReset">Reset progress</button>
+    </div>
+    <div class="bar"><i id="progBar" style="width:0%"></i></div>
+    <p class="sync" id="progSync">Loading your progress…</p>
+
+    <div class="sync-row">
+      <input type="text" id="syncCode" spellcheck="false" autocomplete="off" aria-label="Progress code">
+      <button type="button" id="syncCopy">Copy</button>
+      <button type="button" id="syncApply">Apply</button>
+    </div>
+    <p class="sync-msg plain-msg" id="syncMsg">Copy this code on one device, paste it on another, then press Apply. Applying only adds ticks — it never removes them.</p>
+  </div>
+
+  <div id="planWeeks"></div>
+
+  <div class="card">
+    <h3>After day 40</h3>
+    <p style="margin:0 0 .5rem">Don't start another course. Keep it alive with three habits:</p>
+    <p style="margin:0 0 .4rem"><b>Weekly, 5 minutes.</b> Pick one exercise you did that week and write out its joint-by-joint analysis before checking the Module 7 method against it.</p>
+    <p style="margin:0 0 .4rem"><b>Monthly, 10 minutes.</b> Re-take the anatomy self-check and re-do the atlas recall. What you've lost tells you what to re-read.</p>
+    <p style="margin:0"><b>Whenever you meet a claim.</b> Run the seven questions from Training science 10 on it before you believe or dismiss it. That habit outlives everything else here.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p><strong>Honest notes on this course.</strong> All diagrams here are original schematics drawn for this page — simplified on purpose, and not a substitute for a proper anatomical atlas. Anything marked <span class="ev ev-a">approximate</span> is a figure I'd want you to verify from a primary source before relying on it; anything marked <span class="ev ev-c">contested</span> is genuinely argued over in the literature.</p>
+  <p>Reference texts I'm confident exist, if you want to read alongside: <em>Strength Training Anatomy</em> by Frédéric Delavier, and the NSCA's <em>Essentials of Strength Training and Conditioning</em>. NASM, ACE, ISSA and NSCA are the main certifying bodies — check their current syllabi directly, since curricula get revised.</p>
+  <p>This is educational material about how bodies move. It isn't medical advice, and nothing here is an assessment of any specific person's body or symptoms.</p>
+</footer>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- module rail ---------- */
+  var modsAnat = [
+    ["m1","1 · Language"],["m2","2 · Joints"],["m3","3 · Muscle"],["m4","4 · Atlas"],
+    ["m5","5 · Levers"],["m6","6 · Patterns"],["m7","7 · Analysis"],["m8","8 · Programme"]
+  ];
+  var modsSci = [
+    ["s1","1 · Principles"],["s2","2 · Design"],["s3","3 · Progression"],["s4","4 · Physiology"],
+    ["s5","5 · Recovery"],["s6","6 · Nutrition"],["s7","7 · Assessment"],["s8","8 · Coaching"],
+    ["s9","9 · Injury"],["s10","10 · Evidence"],["s11","11 · Pain signals"]
+  ];
+  var rail = document.getElementById("rail");
+
+  function buildRail(list){
+    rail.innerHTML = "";
+    list.forEach(function(m){
+      var b = document.createElement("button");
+      b.textContent = m[1]; b.setAttribute("data-t", m[0]);
+      b.addEventListener("click", function(){
+        var el = document.getElementById(m[0]);
+        if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+      rail.appendChild(b);
+    });
+    if("IntersectionObserver" in window){
+      if(window.__atlasIO) window.__atlasIO.disconnect();
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){
+            rail.querySelectorAll("button").forEach(function(b){
+              b.setAttribute("aria-current", b.getAttribute("data-t")===e.target.id ? "true" : "false");
+            });
+          }
+        });
+      }, {rootMargin:"-20% 0px -70% 0px"});
+      list.forEach(function(m){ var el=document.getElementById(m[0]); if(el) io.observe(el); });
+      window.__atlasIO = io;
+    }
+  }
+  buildRail(modsAnat);
+
+  /* ---------- planes ---------- */
+  var planeData = {
+    sag:{t:"Sagittal plane", a:"Splits the body left / right.", b:"Forward-and-back movement.",
+         c:"Squat · curl · bench · running", ax:"frontal axis", x1:56,y1:120,x2:164,y2:120, ay:124},
+    fro:{t:"Frontal plane", a:"Splits the body front / back.", b:"Side-to-side movement.",
+         c:"Lateral raise · side lunge · jack", ax:"sagittal axis", x1:110,y1:60,x2:110,y2:300, ay:190},
+    tra:{t:"Transverse plane", a:"Splits the body top / bottom.", b:"Rotation.",
+         c:"Woodchop · torso twist · pec fly", ax:"longitudinal axis", x1:110,y1:20,x2:110,y2:340, ay:190}
+  };
+  var planeCtrl = document.getElementById("planeCtrl");
+  planeCtrl.addEventListener("click", function(ev){
+    var b = ev.target.closest("button"); if(!b) return;
+    var k = b.getAttribute("data-p"), d = planeData[k];
+    planeCtrl.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b ? "true":"false"); });
+    document.getElementById("pSag").style.display = (k==="sag")?"":"none";
+    document.getElementById("pSagL").style.display = (k==="sag")?"":"none";
+    document.getElementById("pFro").style.display = (k==="fro")?"":"none";
+    document.getElementById("pTra").style.display = (k==="tra")?"":"none";
+    document.getElementById("pTitle").textContent = d.t;
+    document.getElementById("pL1").textContent = d.a;
+    document.getElementById("pL2").textContent = d.b;
+    document.getElementById("pL3").textContent = d.c;
+    var ax = document.getElementById("axL");
+    ax.setAttribute("x1",d.x1); ax.setAttribute("y1",d.y1);
+    ax.setAttribute("x2",d.x2); ax.setAttribute("y2",d.y2);
+    var at = document.getElementById("axT");
+    at.textContent = d.ax; at.setAttribute("y", d.ay);
+  });
+
+  /* ---------- joints ---------- */
+  var jointData = {
+    shoulder:{n:"Glenohumeral (shoulder)", m:"ball-and-socket · 3 DOF · all three planes",
+      l:["Flexion/extension, abduction/adduction, internal/external rotation, horizontal ab/adduction.",
+         "Largest range in the body, least bony stability — soft tissue does the holding.",
+         "Gym: every press, raise, fly, pulldown and row passes through here."]},
+    scapula:{n:"Scapulothoracic (shoulder blade)", m:"not a true joint · floats on muscle",
+      l:["Elevation/depression, protraction/retraction, upward/downward rotation.",
+         "Positions the socket so the shoulder joint can work in a good orientation.",
+         "Gym: 'blades down and back' is a cue about this, not the shoulder joint."]},
+    elbow:{n:"Elbow (humeroulnar)", m:"hinge · 1 DOF · sagittal only",
+      l:["Flexion and extension. Nothing else.",
+         "Curl variations change the resistance curve and shoulder position, not the plane.",
+         "Gym: curls, extensions, and the elbow half of every press and row."]},
+    forearm:{n:"Radioulnar (forearm)", m:"pivot · 1 DOF · transverse",
+      l:["Pronation (palm down) and supination (palm up).",
+         "The rotation you feel in a curl comes from here, not the elbow.",
+         "Gym: grip choice on curls, rows and pulldowns changes forearm position."]},
+    spine:{n:"Spinal column", m:"many gliding joints · regionally different",
+      l:["Lumbar is built mainly for flexion/extension with little rotation; thoracic rotates more freely.",
+         "Figures around 10–15° total lumbar rotation vs 30–40° thoracic are commonly cited — treat as approximate textbook ranges.",
+         "Gym: drive rotation from the thoracic spine and hips, not by twisting the low back under load."]},
+    hip:{n:"Hip (acetabulofemoral)", m:"ball-and-socket · 3 DOF · all three planes",
+      l:["Same categories as the shoulder, opposite design: deep socket, thick ligaments, big muscles.",
+         "Stability first, range second.",
+         "Gym: squat and hinge sagittally; abduction/rotation control shows up in every single-leg movement."]},
+    knee:{n:"Knee (tibiofemoral)", m:"modified hinge · mostly 1 DOF · sagittal",
+      l:["Flexion and extension, plus a small amount of rotation when bent.",
+         "Almost no frontal-plane range — so knee valgus is a hip and ankle problem showing up at the knee.",
+         "Gym: squats, lunges, leg press, leg curl and extension."]},
+    ankle:{n:"Ankle complex", m:"two joints · sagittal + frontal",
+      l:["Talocrural (hinge): dorsiflexion and plantarflexion, sagittal.",
+         "Subtalar (below it): inversion and eversion, frontal.",
+         "Gym: limited dorsiflexion is a common reason a squat gets shallow or heels lift. Test it before blaming the hips."]}
+  };
+  var jOut = document.getElementById("jointOut");
+  document.getElementById("joints").addEventListener("click", function(ev){
+    var c = ev.target.closest(".hot"); if(!c) return;
+    document.querySelectorAll("#joints .hot").forEach(function(x){ x.setAttribute("data-on", x===c?"1":"0"); });
+    var d = jointData[c.getAttribute("data-j")];
+    jOut.innerHTML = "<h4>"+d.n+"</h4><p class='meta'>"+d.m+"</p><ul><li>"+d.l.join("</li><li>")+"</li></ul>";
+  });
+
+  /* ---------- muscle atlas ---------- */
+  var muscData = {
+    pec:{n:"Pectoralis major", m:"shoulder · horizontal adduction, flexion, internal rotation",
+      l:["Sweeps the arm across the chest and presses it forward.","Trained by: bench press, push-up, dip, fly, cable crossover."]},
+    delt:{n:"Deltoid (anterior & lateral)", m:"shoulder · flexion and abduction",
+      l:["Anterior fibres raise the arm forward; lateral fibres raise it out to the side.","Trained by: overhead press, front raise, lateral raise."]},
+    biceps:{n:"Biceps brachii & brachialis", m:"elbow · flexion (biceps also supinates)",
+      l:["Biceps crosses both shoulder and elbow; brachialis sits underneath and is a pure elbow flexor.","Trained by: curls of every kind, chin-ups, rows."]},
+    forearm:{n:"Forearm flexors & extensors", m:"wrist and fingers · flexion, extension, grip",
+      l:["Mostly isometric in lifting — they hold the bar.","Trained by: every pull you do, plus carries and direct wrist work."]},
+    abs:{n:"Rectus abdominis", m:"spine · flexion; resists extension",
+      l:["In lifting its main job is isometric: stopping the ribs flaring and the low back arching.","Trained by: crunches and leg raises, but also overhead press, planks, carries."]},
+    oblique:{n:"Obliques (internal & external)", m:"spine · rotation and side-bending; resists both",
+      l:["The main transverse-plane trunk muscles, and the main anti-rotation ones.","Trained by: woodchops, Pallof press, suitcase carries, side planks."]},
+    quad:{n:"Quadriceps", m:"knee · extension (rectus femoris also flexes the hip)",
+      l:["Four muscles; rectus femoris is the only one crossing the hip as well.","Trained by: squats, leg press, lunges, leg extension."]},
+    tibant:{n:"Tibialis anterior", m:"ankle · dorsiflexion",
+      l:["Pulls the toes toward the shin; works against the calf.","Trained by: direct dorsiflexion work; also matters for squat depth."]},
+    trap:{n:"Trapezius (upper / mid / lower)", m:"scapula · elevation, retraction, upward rotation",
+      l:["Three functional regions doing different jobs — treat them separately.","Trained by: shrugs (upper), rows and face pulls (mid), overhead work and prone raises (lower)."]},
+    reardelt:{n:"Posterior deltoid", m:"shoulder · extension, horizontal abduction, external rotation",
+      l:["Pulls the arm back and out — the opposite of the pec.","Trained by: reverse fly, face pull, wide rows."]},
+    lat:{n:"Latissimus dorsi", m:"shoulder · adduction, extension, internal rotation",
+      l:["Largest back muscle; pulls the arm down and back toward the body.","Trained by: pull-ups, pulldowns, rows, straight-arm pulldown."]},
+    triceps:{n:"Triceps brachii", m:"elbow · extension (long head also extends the shoulder)",
+      l:["Three heads; the long head crosses the shoulder, so overhead positions change its length.","Trained by: pressing of all kinds, dips, pushdowns, overhead extensions."]},
+    erector:{n:"Erector spinae", m:"spine · extension; resists flexion",
+      l:["Runs the length of the back. In lifting, mostly isometric — holding spinal position under load.","Trained by: deadlifts, RDLs, back extensions, carries."]},
+    glute:{n:"Gluteus maximus (and medius/minimus)", m:"hip · extension; abduction and rotation (med/min)",
+      l:["Maximus is the main hip extensor. Medius and minimus control the frontal and transverse planes on one leg.","Trained by: hinges, squats, thrusts, lunges; med/min by single-leg and abduction work."]},
+    ham:{n:"Hamstrings", m:"hip extension + knee flexion",
+      l:["Crosses two joints, which is why they're trained differently by an RDL than by a leg curl.","Trained by: RDLs, good mornings, leg curls, Nordic curls."]},
+    calf:{n:"Gastrocnemius & soleus", m:"ankle · plantarflexion",
+      l:["Gastrocnemius also crosses the knee, so it's longer with a straight leg; soleus does not.","Trained by: standing calf raise (gastroc bias), seated calf raise (soleus bias)."]}
+  };
+  var mOut = document.getElementById("muscOut");
+  function wireMuscles(){
+    document.querySelectorAll(".musc").forEach(function(el){
+      el.addEventListener("click", function(){
+        var key = el.getAttribute("data-m");
+        document.querySelectorAll(".musc").forEach(function(x){
+          x.setAttribute("data-on", x.getAttribute("data-m")===key ? "1":"0");
+        });
+        var d = muscData[key]; if(!d) return;
+        mOut.innerHTML = "<h4>"+d.n+"</h4><p class='meta'>"+d.m+"</p><ul><li>"+d.l.join("</li><li>")+"</li></ul>";
+      });
+    });
+  }
+  wireMuscles();
+  document.getElementById("viewCtrl").addEventListener("click", function(ev){
+    var b = ev.target.closest("button"); if(!b) return;
+    var v = b.getAttribute("data-v");
+    this.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    document.getElementById("gFront").style.display = (v==="front")?"":"none";
+    document.getElementById("gBack").style.display  = (v==="back")?"":"none";
+  });
+
+  /* ---------- curl / moment arm ---------- */
+  var EX = 62, EY = 124, LEN = 100;
+  var range = document.getElementById("curlRange");
+  function drawCurl(){
+    var deg = parseFloat(range.value);
+    var rad = deg * Math.PI / 180;
+    // 0deg = forearm hanging straight down; rotating toward horizontal then past it
+    var hx = EX + LEN * Math.sin(rad);
+    var hy = EY + LEN * Math.cos(rad);
+    document.getElementById("fore").innerHTML =
+      '<line x1="'+EX+'" y1="'+EY+'" x2="'+hx.toFixed(1)+'" y2="'+hy.toFixed(1)+
+      '" stroke="var(--bone)" stroke-width="18" stroke-linecap="round"/>'+
+      '<circle cx="'+hx.toFixed(1)+'" cy="'+hy.toFixed(1)+'" r="12" fill="var(--muscle)"/>';
+    var ma = document.getElementById("ma");
+    ma.setAttribute("x1", EX); ma.setAttribute("y1", EY);
+    ma.setAttribute("x2", hx.toFixed(1)); ma.setAttribute("y2", EY);
+    var g = document.getElementById("grav");
+    g.setAttribute("x1", hx.toFixed(1)); g.setAttribute("y1", EY);
+    g.setAttribute("x2", hx.toFixed(1)); g.setAttribute("y2", (hy+18).toFixed(1));
+    var pct = Math.round(Math.abs(Math.sin(rad)) * 100);
+    var t = document.getElementById("maT");
+    t.setAttribute("x", (EX + (hx-EX)/2 - 18).toFixed(1));
+    t.setAttribute("y", (EY - 8).toFixed(1));
+    t.setAttribute("opacity", pct > 8 ? "1" : "0");
+    t.textContent = "moment arm";
+    document.getElementById("curlVal").textContent = deg + "°";
+    document.getElementById("curlBar").style.width = pct + "%";
+    document.getElementById("curlPct").textContent = pct + "%";
+  }
+  range.addEventListener("input", drawCurl);
+  drawCurl();
+
+  /* ---------- exercise analyser ---------- */
+  var exData = {
+    "Back squat":{
+      hard:"Hardest out of the hole, where the hip and knee moment arms are longest.",
+      rows:[["Hip","Extension (concentric up)","Sagittal","Gluteus maximus, adductor magnus, hamstrings"],
+            ["Knee","Extension","Sagittal","Quadriceps"],
+            ["Ankle","Plantarflexion from dorsiflexed","Sagittal","Soleus, gastrocnemius"],
+            ["Spine","Isometric — resisting flexion","Sagittal","Erector spinae, abdominals"],
+            ["Scapula","Isometric retraction","Frontal","Mid trapezius, rhomboids"]]},
+    "Deadlift":{
+      hard:"Hardest off the floor and at the point where the bar passes the knee.",
+      rows:[["Hip","Extension","Sagittal","Gluteus maximus, hamstrings"],
+            ["Knee","Extension (less than a squat)","Sagittal","Quadriceps"],
+            ["Spine","Isometric — resisting flexion","Sagittal","Erector spinae"],
+            ["Scapula","Isometric depression/retraction","Frontal","Lower & mid trapezius"],
+            ["Grip","Isometric","—","Forearm flexors"]]},
+    "Bench press":{
+      hard:"Hardest at the chest, where the shoulder moment arm is longest.",
+      rows:[["Shoulder","Horizontal adduction","Transverse","Pectoralis major, anterior deltoid"],
+            ["Elbow","Extension","Sagittal","Triceps brachii"],
+            ["Scapula","Isometric retraction + depression","Frontal","Mid trapezius, rhomboids"]]},
+    "Overhead press":{
+      hard:"Hardest just above the forehead, where the bar is furthest from the shoulder.",
+      rows:[["Shoulder","Flexion / abduction (grip-dependent)","Sagittal / frontal","Anterior & lateral deltoid"],
+            ["Scapula","Upward rotation","Frontal","Serratus anterior, upper & lower trapezius"],
+            ["Elbow","Extension","Sagittal","Triceps brachii"],
+            ["Spine","Isometric — resisting extension","Sagittal","Abdominals"]]},
+    "Pull-up":{
+      hard:"Hardest at the bottom, from a dead hang.",
+      rows:[["Shoulder","Adduction + extension","Frontal / sagittal","Latissimus dorsi, teres major"],
+            ["Elbow","Flexion","Sagittal","Biceps brachii, brachialis"],
+            ["Scapula","Downward rotation + depression","Frontal","Lower trapezius, rhomboids, pec minor"],
+            ["Spine","Isometric","Sagittal","Abdominals"]]},
+    "Barbell row":{
+      hard:"Hardest at the top, with the bar furthest from the shoulder joint.",
+      rows:[["Shoulder","Extension / horizontal abduction","Sagittal / transverse","Latissimus dorsi, posterior deltoid"],
+            ["Elbow","Flexion","Sagittal","Biceps brachii"],
+            ["Scapula","Retraction","Frontal","Rhomboids, mid trapezius"],
+            ["Hip","Isometric hinge hold","Sagittal","Hamstrings, erector spinae"]]},
+    "Romanian deadlift":{
+      hard:"Hardest around mid-shin, where the bar is furthest forward of the hip.",
+      rows:[["Hip","Extension (flexion on the way down)","Sagittal","Hamstrings, gluteus maximus"],
+            ["Knee","Soft, largely isometric","Sagittal","Quadriceps (stabilising)"],
+            ["Spine","Isometric — resisting flexion","Sagittal","Erector spinae"],
+            ["Scapula","Isometric","Frontal","Mid & lower trapezius"]]},
+    "Walking lunge":{
+      hard:"Hardest at the bottom of the front leg; frontal-plane control is hardest on contact.",
+      rows:[["Front hip","Extension","Sagittal","Gluteus maximus, hamstrings"],
+            ["Front knee","Extension","Sagittal","Quadriceps"],
+            ["Front hip","Isometric — resisting adduction & internal rotation","Frontal + transverse","Gluteus medius & minimus, deep rotators"],
+            ["Ankle","Sagittal drive + frontal stability","Sagittal / frontal","Calf, peroneals, tibialis posterior"],
+            ["Spine","Isometric anti-rotation","Transverse","Obliques"]]}
+  };
+  var exCtrl = document.getElementById("exCtrl");
+  var exOut  = document.getElementById("exOut");
+  function showEx(name){
+    var d = exData[name];
+    var h = "<h4>"+name+"</h4><p class='meta'>joint · action · plane · prime movers</p>"+
+      "<div class='tw'><table><thead><tr><th>Joint</th><th>Action</th><th>Plane</th><th>Muscles</th></tr></thead><tbody>";
+    d.rows.forEach(function(r){ h += "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td>"+r[2]+"</td><td>"+r[3]+"</td></tr>"; });
+    h += "</tbody></table></div><p style='margin:.5rem 0 0;font-size:.88rem'><b>Resistance curve:</b> "+d.hard+"</p>";
+    exOut.innerHTML = h;
+  }
+  Object.keys(exData).forEach(function(k, i){
+    var b = document.createElement("button");
+    b.textContent = k; b.setAttribute("aria-pressed", i===0 ? "true":"false");
+    b.addEventListener("click", function(){
+      exCtrl.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+      showEx(k);
+    });
+    exCtrl.appendChild(b);
+  });
+  showEx("Back squat");
+
+  /* ---------- quiz ---------- */
+  var quiz = [
+    ["A dumbbell lateral raise happens in which plane, and what is the joint action?",
+     "Frontal plane; shoulder abduction. The scapula also upwardly rotates as you pass shoulder height."],
+    ["How many degrees of freedom does the elbow have, and what follows from that?",
+     "One — sagittal flexion and extension only. So no grip or angle change makes a curl a different-plane exercise; it only changes the resistance curve and the shoulder's position."],
+    ["A lifter's knees cave in during a squat. Which joint would you look at first?",
+     "The hip — adduction and internal rotation — and the ankle. The knee has almost no frontal-plane range of its own, so it's displaying someone else's problem."],
+    ["Which structure deepens the shoulder socket, and why does it matter?",
+     "The labrum, a fibrocartilage rim on the glenoid. It matters because the bony socket is shallow, so the labrum, capsule and rotator cuff supply the stability bone supplies at the hip."],
+    ["Where in a standing biceps curl is the demand on the biceps highest?",
+     "With the forearm horizontal — around 90° of elbow flexion — because that is where the moment arm between the elbow and the weight is longest."],
+    ["Which spinal region should rotation be driven from under load, and roughly why?",
+     "The thoracic spine (with the hips). The lumbar spine is built mainly for flexion and extension and has comparatively little rotation available — the figures usually quoted are approximate, but the design difference is real."]
+  ];
+  var qWrap = document.getElementById("quiz");
+  quiz.forEach(function(q, i){
+    var d = document.createElement("div");
+    d.className = "q";
+    d.innerHTML = "<p>"+(i+1)+". "+q[0]+"</p><button type='button'>Show answer</button><div class='ans' hidden>"+q[1]+"</div>";
+    var btn = d.querySelector("button"), ans = d.querySelector(".ans");
+    btn.addEventListener("click", function(){
+      ans.hidden = !ans.hidden;
+      btn.textContent = ans.hidden ? "Show answer" : "Hide answer";
+    });
+    qWrap.appendChild(d);
+  });
+
+  /* ---------- view toggle ---------- */
+  var views = {
+    anat: document.getElementById("anatView"),
+    sci:  document.getElementById("sciView"),
+    plan: document.getElementById("planView")
+  };
+  var tabs = {
+    anat: document.getElementById("tabAnat"),
+    sci:  document.getElementById("tabSci"),
+    plan: document.getElementById("tabPlan")
+  };
+
+  function setView(v, scroll){
+    if(!views[v]) v = "anat";
+    Object.keys(views).forEach(function(k){
+      views[k].hidden = (k !== v);
+      tabs[k].setAttribute("aria-pressed", k === v ? "true" : "false");
+    });
+    rail.hidden = (v === "plan");
+    if(v === "anat") buildRail(modsAnat);
+    if(v === "sci")  buildRail(modsSci);
+    if(scroll) window.scrollTo({top:0, behavior:"smooth"});
+    try{ localStorage.setItem("gymAtlasTab", v); }catch(e){}
+  }
+  tabs.anat.addEventListener("click", function(){ setView("anat", true); });
+  tabs.sci.addEventListener("click",  function(){ setView("sci", true); });
+  tabs.plan.addEventListener("click", function(){ setView("plan", true); });
+  try{
+    var savedTab = localStorage.getItem("gymAtlasTab");
+    if(savedTab && savedTab !== "anat" && savedTab !== "course") setView(savedTab, false);
+  }catch(e){}
+
+  /* ---------- programme template builder ---------- */
+  var splits = {
+    "2":{name:"Full body, twice a week", days:[
+      ["Session A","Squat pattern · Horizontal push · Horizontal pull · Hinge accessory · Carry"],
+      ["Session B","Hinge pattern · Vertical push · Vertical pull · Lunge · Anti-rotation core"]
+    ]},
+    "3":{name:"Full body, three times a week", days:[
+      ["Session A","Squat · Horizontal push · Horizontal pull · Hamstring accessory · Core"],
+      ["Session B","Hinge · Vertical push · Vertical pull · Lunge · Calf"],
+      ["Session C","Squat variation · Incline push · Row variation · Hip abduction · Carry"]
+    ]},
+    "4":{name:"Upper / lower, twice through", days:[
+      ["Upper A","Horizontal push · Horizontal pull · Vertical push · Vertical pull · Arms"],
+      ["Lower A","Squat · Hinge accessory · Lunge · Calf · Core"],
+      ["Upper B","Vertical push · Vertical pull · Horizontal push · Horizontal pull · Rear delt"],
+      ["Lower B","Hinge · Squat accessory · Single-leg · Hip abduction · Carry"]
+    ]},
+    "5":{name:"Upper / lower / push / pull / legs", days:[
+      ["Upper","Horizontal push · Horizontal pull · Vertical push · Vertical pull"],
+      ["Lower","Squat · Hinge accessory · Lunge · Calf"],
+      ["Push","Incline push · Vertical push · Lateral raise · Triceps"],
+      ["Pull","Vertical pull · Row · Rear delt · Biceps"],
+      ["Legs","Hinge · Single-leg · Hamstring accessory · Core &amp; carry"]
+    ]}
+  };
+  var schemes = {
+    str:{label:"Strength",
+      main:"3–5 sets × 3–6 reps", acc:"2–3 sets × 6–10 reps",
+      rest:"2–5 min on main lifts, 1–2 min on accessories", rir:"1–3 reps in reserve on main work",
+      note:"Keep technique identical at every load. Heavy work is a skill as much as an effort."},
+    hyp:{label:"Muscle size",
+      main:"3–4 sets × 6–12 reps", acc:"2–4 sets × 10–15 reps",
+      rest:"1–3 min", rir:"0–2 reps in reserve",
+      note:"Total weekly hard sets per muscle matters more than any single session. Rep range is wide and forgiving."},
+    gen:{label:"General fitness",
+      main:"2–3 sets × 8–12 reps", acc:"2–3 sets × 10–15 reps",
+      rest:"1–2 min", rir:"2–4 reps in reserve",
+      note:"Leave something in the tank. The aim is a session you'll repeat next week, not one you'll dread."}
+  };
+  var curGoal = "str", curDays = "3";
+  function renderTemplate(){
+    var sp = splits[curDays], sc = schemes[curGoal];
+    var h = "<h4>"+sc.label+" · "+sp.name+"</h4>";
+    h += "<p class='meta'>a starting point, not a prescription</p>";
+    h += "<div class='tw'><table><thead><tr><th>Session</th><th>Pattern order</th></tr></thead><tbody>";
+    sp.days.forEach(function(d){ h += "<tr><td><b>"+d[0]+"</b></td><td>"+d[1]+"</td></tr>"; });
+    h += "</tbody></table></div>";
+    h += "<ul><li><b>Main lifts:</b> "+sc.main+"</li><li><b>Accessories:</b> "+sc.acc+"</li>"+
+         "<li><b>Rest:</b> "+sc.rest+"</li><li><b>Effort:</b> "+sc.rir+"</li></ul>";
+    h += "<p style='margin:.5rem 0 0;font-size:.88rem'>"+sc.note+"</p>";
+    document.getElementById("tmplOut").innerHTML = h;
+  }
+  document.getElementById("goalCtrl").addEventListener("click", function(ev){
+    var b = ev.target.closest("button"); if(!b) return;
+    curGoal = b.getAttribute("data-g");
+    this.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    renderTemplate();
+  });
+  document.getElementById("daysCtrl").addEventListener("click", function(ev){
+    var b = ev.target.closest("button"); if(!b) return;
+    curDays = b.getAttribute("data-d");
+    this.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    renderTemplate();
+  });
+  renderTemplate();
+
+  /* ---------- RIR scale ---------- */
+  var rirData = {
+    "5":["5 or more reps left","Well short of failure. Fine for warm-ups, technique practice and deload weeks, but generally below the effort where much adaptation happens for a trained lifter."],
+    "4":["4 reps left","Comfortable. Useful for high-volume accessory work and for beginners still learning a movement, where technique is the point."],
+    "3":["3 reps left","Productive territory begins here. Bar speed is still good and you could repeat the set without much decay."],
+    "2":["2 reps left","The common working range for most sets. Productive, repeatable week to week, and recoverable. If you only learn one target, learn this one."],
+    "1":["1 rep left","Genuinely hard. Good occasionally and on isolation work. Expensive if every set lives here, because fatigue accumulates faster than the extra stimulus is worth."],
+    "0":["Failure — nothing left","Strong stimulus, strong fatigue. Use sparingly. Rarely worth it on heavy compound lifts, where the last rep is usually the one with the worst technique."]
+  };
+  function renderRir(r){
+    var d = rirData[r];
+    document.getElementById("rirOut").innerHTML =
+      "<h4>"+d[0]+"</h4><p class='meta'>RIR "+r+" · roughly RPE "+(10-parseInt(r,10))+"</p><p style='margin:0'>"+d[1]+"</p>";
+  }
+  document.getElementById("rirScale").addEventListener("click", function(ev){
+    var b = ev.target.closest("button"); if(!b) return;
+    this.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    renderRir(b.getAttribute("data-r"));
+  });
+  renderRir("2");
+
+  /* ---------- energy systems ---------- */
+  var eRange = document.getElementById("energyRange");
+  function fmtDur(t){
+    if(t < 60) return Math.round(t) + " s";
+    var m = Math.floor(t/60), s = Math.round(t%60);
+    return s ? m + "m " + s + "s" : m + " min";
+  }
+  function energyContext(t){
+    if(t <= 8)   return ["A heavy single or double, a jump, a throw, a short sprint.","Rest is the limiting factor here, not conditioning — this system recharges in minutes, which is why heavy strength work wants long rests."];
+    if(t <= 25)  return ["A set of roughly 5–12 reps at a challenging weight.","Most resistance-training sets live here. Both of the fast systems are contributing heavily."];
+    if(t <= 75)  return ["A long set of 15–25 reps, a hard 400 m, a heavy carry.","This is where the burning sensation is most pronounced, and where the handover between the fast systems and the oxidative one is happening."];
+    if(t <= 240) return ["A circuit, a hard interval, a 1 km row.","Oxidative metabolism is now carrying most of the load, but the glycolytic contribution is still substantial."];
+    return ["Steady-state cardio, a long effort, general activity.","Almost entirely oxidative. Trained by sustained work, and the system that improves for the longest before plateauing."];
+  }
+  function drawEnergy(){
+    var v = parseFloat(eRange.value);
+    var t = Math.pow(600, v/100);
+    var pcr = 100 * Math.exp(-t/15);
+    var ox  = 100 / (1 + Math.exp(-(Math.log(t) - Math.log(75)) / 0.6));
+    var gly = 100 - pcr - ox;
+    if(gly < 0){ gly = 0; }
+    var tot = pcr + ox + gly;
+    pcr = pcr/tot*100; ox = ox/tot*100; gly = gly/tot*100;
+    document.getElementById("energyVal").textContent = fmtDur(t);
+    document.getElementById("eb1").style.width = pcr.toFixed(1) + "%";
+    document.getElementById("eb2").style.width = gly.toFixed(1) + "%";
+    document.getElementById("eb3").style.width = ox.toFixed(1) + "%";
+    document.getElementById("ep1").textContent = Math.round(pcr) + "%";
+    document.getElementById("ep2").textContent = Math.round(gly) + "%";
+    document.getElementById("ep3").textContent = Math.round(ox) + "%";
+    var c = energyContext(t);
+    document.getElementById("energyOut").innerHTML =
+      "<h4>" + c[0] + "</h4><p class='meta'>about " + fmtDur(t) + " of continuous effort</p><p style='margin:0'>" + c[1] + "</p>";
+  }
+  eRange.addEventListener("input", drawEnergy);
+  eRange.value = 36;
+  drawEnergy();
+
+  /* ---------- claim checker ---------- */
+  var claims = [
+    ["You have to eat protein within 30 minutes of training or the session is wasted.","ev-c","Weak",
+     "The 'anabolic window' is far wider than it was marketed as — hours, not minutes. Total daily protein and overall intake matter considerably more than timing. Timing isn't irrelevant, it's just a rounding error next to the total."],
+    ["Lifting heavy weights makes women bulky.","ev-c","Not supported",
+     "Building large amounts of muscle is slow and difficult for everyone, and hormonal differences make it slower still. Women who lift heavy overwhelmingly report getting stronger, not larger in the way the claim implies."],
+    ["Squatting below parallel damages your knees.","ev-c","Not supported",
+     "Deep squatting is not shown to harm healthy knees, and full-range work has its own benefits. Depth that an individual can control with good position is the real variable. A specific knee condition is a different question — and a clinician's."],
+    ["Soreness means it was a good workout.","ev-c","Poor proxy",
+     "Soreness tracks novelty and eccentric loading, not productivity. Change one exercise and you'll be sore from a mediocre session; repeat a brutal one for weeks and you'll stop being sore while still progressing."],
+    ["Creatine damages your kidneys.","ev-c","Not supported",
+     "Creatine monohydrate has one of the larger safety literatures of any sports supplement, and kidney harm in healthy people isn't supported by it. It does raise creatinine readings, which can look alarming on a blood test without meaning harm. Existing kidney disease is a medical question."],
+    ["Muscle turns into fat if you stop training.","ev-c","Impossible",
+     "They're different tissues; one cannot become the other. What happens is muscle shrinks from disuse while fat may increase if intake doesn't change. The visual result is the source of the myth."],
+    ["You can target fat loss in a specific area with exercises for it.","ev-c","Not supported",
+     "Spot reduction has been tested repeatedly and doesn't hold up. Fat loss happens systemically, with distribution largely determined by genetics and sex. Ab exercises build abs; they don't selectively remove what's over them."],
+    ["High reps tone the muscle, low reps build bulk.","ev-c","Not supported",
+     "'Tone' isn't a physiological process — the visible result people mean is muscle plus lower body fat. A wide range of rep ranges builds muscle when sets are taken close enough to failure."],
+    ["Static stretching before lifting will ruin your performance.","ev-a","Overstated",
+     "Short-term force reductions after prolonged static stretching have been reported, but the magnitude at typical durations appears small and the practical significance is debated. Not a reason for alarm either way."],
+    ["Machines are safer than free weights for beginners.","ev-a","Oversimplified",
+     "Machines reduce the balance and coordination demand, which can be useful. But they don't train stabilising patterns, and 'safe' depends far more on load selection and progression than on equipment category."],
+    ["The testosterone and growth hormone spike after training is what builds muscle.","ev-c","Challenged",
+     "The transient post-exercise hormone rise has been substantially challenged as a driver of hypertrophy. Mechanical tension and training volume appear to do the explanatory work. Programmes are still sold on this premise."],
+    ["You need to confuse your muscles with constantly varied workouts.","ev-c","Not supported",
+     "Muscles don't get confused. Progressive overload requires enough consistency to measure progress. Variation has real uses — managing boredom, working around niggles, covering gaps — but 'confusion' isn't a mechanism."]
+  ];
+  var claimsWrap = document.getElementById("claims");
+  claims.forEach(function(c, i){
+    var d = document.createElement("div");
+    d.className = "claim";
+    var q = document.createElement("div"); q.className = "claim-q";
+    var sp = document.createElement("span"); sp.textContent = "“" + c[0] + "”";
+    var btn = document.createElement("button"); btn.type = "button"; btn.textContent = "Check";
+    q.appendChild(sp); q.appendChild(btn);
+    var a = document.createElement("div"); a.className = "claim-a"; a.hidden = true;
+    a.innerHTML = "<span class='ev " + c[1] + "'>" + c[2] + "</span><p>" + c[3] + "</p>";
+    btn.addEventListener("click", function(){
+      a.hidden = !a.hidden;
+      btn.textContent = a.hidden ? "Check" : "Hide";
+    });
+    d.appendChild(q); d.appendChild(a);
+    claimsWrap.appendChild(d);
+  });
+
+  /* ---------- sensation sorter ---------- */
+  var sensations = [
+    ["Burning in the working muscle","normal","That's metabolite accumulation during the set. It builds as the set goes on and fades within a minute or two of racking the weight. Expected, and not a sign of damage."],
+    ["Fullness or tightness (the pump)","normal","Fluid shifting into the working muscle. Settles within the hour. Enjoyable, harmless, and not a measure of how good the session was."],
+    ["Shaking near the end of a set","normal","The muscle approaching its capacity. Normal close to failure — though if it's happening on your first working set, the load is probably too high for where you are."],
+    ["Diffuse soreness a day or two later","normal","Classic delayed-onset soreness, strongest after new exercises or heavy eccentric work. Peaks somewhere in the 24–72 hour range and eases with gentle movement. Not a reason to skip training, and not a goal either."],
+    ["Sharp or stabbing at one point in the movement","modify","Not a fatigue sensation. Stop that specific movement — you don't necessarily need to stop the session. Try a different range, a lighter load, or a substitute for the same pattern. If it recurs across sessions, get it looked at."],
+    ["Pain at the joint rather than in the muscle","modify","Muscle soreness doesn't localise to a joint line. Reduce the load, change the range, and watch it over the next week. Persistent joint pain is worth a professional opinion rather than a self-managed experiment."],
+    ["Pinching at the very end of the range","modify","Often positional rather than structural. Changing grip width, stance, foot or hand angle, or simply working a little short of that end range frequently resolves it. If nothing changes it, have it assessed."],
+    ["Getting worse set after set","modify","Normal soreness is stable or improves as you warm up. Something that escalates within a session is telling you the dose is wrong today. Stop that exercise, finish the rest of the session if it's comfortable."],
+    ["Same soreness, unchanged after four or five days","modify","DOMS follows a curve and resolves. Something that plateaus isn't DOMS. Keep training around it and arrange to have it looked at if another week doesn't change it."],
+    ["A pop or snap, then pain","refer","Stop. A distinct traumatic moment followed by pain is not something to train through or work out on your own. See a clinician."],
+    ["Numbness, tingling, or shooting pain down a limb","refer","These suggest nerve involvement rather than muscle fatigue. Stop the provoking activity and get it assessed properly — this is outside what any app or trainer should be interpreting."],
+    ["Swelling, locking, giving way, or pain at rest","refer","Each of these is a reason to see a physiotherapist or doctor rather than adjust your programme. Pain that wakes you at night belongs in the same category."]
+  ];
+  var sensVerdict = {
+    normal:["ev-s","Expected","Part of normal training"],
+    modify:["ev-a","Modify and watch","Change the dose, don't stop everything"],
+    refer:["ev-c","See someone","Not a programming problem"]
+  };
+  var sensCtrl = document.getElementById("sensCtrl");
+  var sensOut  = document.getElementById("sensOut");
+  function showSens(i){
+    var s = sensations[i], v = sensVerdict[s[1]];
+    sensOut.innerHTML = "<h4>"+s[0]+"</h4>"+
+      "<span class='ev "+v[0]+"'>"+v[1]+"</span>"+
+      "<p class='meta' style='margin-top:.4rem'>"+v[2]+"</p>"+
+      "<p style='margin:0'>"+s[2]+"</p>";
+  }
+  sensations.forEach(function(s, i){
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = s[0];
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function(){
+      sensCtrl.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+      showSens(i);
+    });
+    sensCtrl.appendChild(b);
+  });
+  sensOut.innerHTML = "<h4>Pick a sensation</h4><p class='meta'>expected · modify and watch · see someone</p>"+
+    "<p style='margin:0;color:var(--ink-soft)'>General education only — this can't assess anything you're actually experiencing.</p>";
+
+  /* ---------- study plan ---------- */
+  var planData = [
+    {w:"Week 1", t:"Learn the language", note:"Everything later depends on this week. Short days on purpose.", days:[
+      {id:"d1", n:1, min:12, mod:"m1", title:"Anatomical position and the three planes",
+       task:"Read the opening of Module 1 and click through all three planes in the figure. Notice that the axis line moves with the plane.",
+       drill:"Name the plane for a back squat, a lateral raise, and a cable woodchop."},
+      {id:"d2", n:2, min:10, mod:"m1", title:"Sagittal-plane terms",
+       task:"Flexion, extension, dorsiflexion, plantarflexion. Four words, that's the whole day.",
+       drill:"Write out what the knee and the hip each do on the way down of a squat, and on the way up."},
+      {id:"d3", n:3, min:10, mod:"m1", title:"Frontal-plane terms",
+       task:"Abduction, adduction, elevation, depression, protraction, retraction.",
+       drill:"List three exercises you already do in the frontal plane. If you can't find three, that's the finding — note it."},
+      {id:"d4", n:4, min:12, mod:"m1", title:"Transverse-plane terms",
+       task:"Internal and external rotation, horizontal ab/adduction, pronation and supination.",
+       drill:"Work out for yourself why the bench press is a transverse-plane action at the shoulder, even though you push upward."},
+      {id:"d5", n:5, min:12, mod:"m1", title:"Directional terms, then your first analysis",
+       task:"Anterior, posterior, superior, inferior, medial, lateral, proximal, distal. Then re-read the box at the end of Module 1.",
+       drill:"Take three exercises from your own programme. For each, list every joint that moves and its action and plane."}
+    ]},
+    {w:"Week 2", t:"Joints, and how muscle pulls", note:"Modules 2 and 3. Day 7 is the longest of the course.", days:[
+      {id:"d6", n:6, min:12, mod:"m2", title:"The six joint types and degrees of freedom",
+       task:"Read the joint-type table, then tap all eight joints on the map once.",
+       drill:"Without looking, say how many degrees of freedom the elbow, hip and knee each have, and what that rules out."},
+      {id:"d7", n:7, min:15, mod:"m2", title:"The shoulder and the scapula",
+       task:"The socket-depth figure and the paragraphs under it. This is the densest section — take it slowly.",
+       drill:"Explain out loud, in your own words, why the shoulder trades stability for range and what holds it together instead of bone."},
+      {id:"d8", n:8, min:12, mod:"m2", title:"Hip, knee, ankle and spine",
+       task:"Tap through those four on the joint map and read the knee-valgus box.",
+       drill:"Explain why knees caving in is not a knee problem. Then test your own ankle dorsiflexion."},
+      {id:"d9", n:9, min:12, mod:"m3", title:"Origin, insertion, and the three contractions",
+       task:"Module 3 down to the contraction types. The origin-insertion figure is the method you'll reuse all course.",
+       drill:"Pick any muscle you know and work out its action purely from where its two ends attach."},
+      {id:"d10", n:10, min:10, mod:"m3", title:"Muscle roles, and week 2 review",
+       task:"Agonist, antagonist, synergist, stabiliser — plus the length–tension note.",
+       drill:"Name the hamstrings' role in three different exercises: a leg curl, a deadlift, and a leg extension."}
+    ]},
+    {w:"Week 3", t:"The muscle atlas", note:"Module 4, one quadrant a day. Use the clickable map, don't just read.", days:[
+      {id:"d11", n:11, min:12, mod:"m4", title:"Front, upper body",
+       task:"Pectoralis major, deltoid, biceps and brachialis, forearm flexors.",
+       drill:"For each, say the joint it crosses, its main action, and one exercise. Then check against the readout."},
+      {id:"d12", n:12, min:12, mod:"m4", title:"Front, trunk and legs",
+       task:"Rectus abdominis, obliques, quadriceps, tibialis anterior.",
+       drill:"Same four-part recall. Pay attention to which trunk muscles work isometrically rather than moving you."},
+      {id:"d13", n:13, min:12, mod:"m4", title:"Back, upper body",
+       task:"Trapezius (all three regions), posterior deltoid, latissimus dorsi, triceps.",
+       drill:"The trapezius has three regions doing different jobs. Name an exercise for each one separately."},
+      {id:"d14", n:14, min:12, mod:"m4", title:"Back, trunk and legs",
+       task:"Erector spinae, gluteus maximus and medius, hamstrings, calves.",
+       drill:"Two muscles here cross two joints. Find them, and work out why that changes how they're trained."},
+      {id:"d15", n:15, min:15, mod:"m4", title:"Atlas recall test",
+       task:"Open the atlas, cover the readout panel with your hand, and work through both views.",
+       drill:"Name every muscle on both views plus one exercise for each. Whatever you miss, that's your re-read list."}
+    ]},
+    {w:"Week 4", t:"Mechanics and application", note:"Modules 5 to 8. This is where it turns into something you can use.", days:[
+      {id:"d16", n:16, min:12, mod:"m5", title:"Levers and the moment arm",
+       task:"Read Module 5 and drag the curl slider slowly through its full range, watching the demand bar.",
+       drill:"Say in one sentence why a dumbbell that weighs the same throughout gets harder and then easier."},
+      {id:"d17", n:17, min:12, mod:"m5", title:"Resistance curves, applied to you",
+       task:"Re-read the lever classes and the practical box.",
+       drill:"Take three lifts you actually do. For each, predict where in the range it's hardest, then test it next session."},
+      {id:"d18", n:18, min:10, mod:"m6", title:"The movement patterns",
+       task:"Module 6's table. Short day.",
+       drill:"Audit your last week of training against the seven patterns. Which are missing? Is anything outside the sagittal plane?"},
+      {id:"d19", n:19, min:15, mod:"m7", title:"Analyse one yourself",
+       task:"Read the four questions at the top of Module 7, then use the exercise picker on two you know.",
+       drill:"Now pick two exercises that are NOT in the picker. Write the full table yourself before checking anything."},
+      {id:"d20", n:20, min:15, mod:"m8", title:"Programme variables, and what's contested",
+       task:"Module 8 in full, including the six contested claims. Knowing which is which is part of the knowledge.",
+       drill:"Take the self-check at the bottom. Answer each out loud before revealing."}
+    ]},
+    {w:"Week 5", t:"Why bodies change, and how to plan it", note:"Training science modules 1 and 2. The anatomy is behind you — this is what it was for.", days:[
+      {id:"d21", n:21, min:12, mod:"s1", title:"The training principles",
+       task:"Overload, specificity, individual variation, reversibility, fatigue management.",
+       drill:"For each of the five, write one sentence on how your own training currently obeys or breaks it."},
+      {id:"d22", n:22, min:10, mod:"s1", title:"Stimulus, fatigue, adaptation",
+       task:"The supercompensation figure and the note under it about why it's a model rather than a timetable.",
+       drill:"Explain why you can feel weakest shortly before you perform best."},
+      {id:"d23", n:23, min:12, mod:"s2", title:"The needs analysis",
+       task:"The six questions a trainer asks before writing anything.",
+       drill:"Answer all six honestly for yourself. The sixth — what you actually enjoy — is the one people lie about."},
+      {id:"d24", n:24, min:12, mod:"s2", title:"The programme variables",
+       task:"Selection, order, load, sets, reps, rest, tempo, frequency. Plus the one real rule about exercise order.",
+       drill:"Take your current session and say what each variable is set to. If you can't answer, that's the finding."},
+      {id:"d25", n:25, min:15, mod:"s2", title:"Build a template",
+       task:"Use the builder with your real available days and your actual goal.",
+       drill:"Write out next week's sessions from it, by hand. Then note the three things the template got wrong about your situation."}
+    ]},
+    {w:"Week 6", t:"Progression and physiology", note:"Modules 3 and 4. Day 28 is the most immediately useful of the whole course.", days:[
+      {id:"d26", n:26, min:10, mod:"s3", title:"Ways to progress",
+       task:"The full list of progression methods, and double progression.",
+       drill:"Pick one lift and write out the next six weeks using double progression. Actual numbers."},
+      {id:"d27", n:27, min:12, mod:"s3", title:"Periodisation models",
+       task:"Linear, undulating, block, autoregulated — plus the box on why the choice matters less than people claim.",
+       drill:"Work out which model your current training most resembles, even if you never chose one."},
+      {id:"d28", n:28, min:12, mod:"s3", title:"Reps in reserve, and deloads",
+       task:"Click through all six levels on the RIR scale and read each description.",
+       drill:"On your next session, guess your RIR before each set, then test it on one set by continuing to failure. Most people are off by two."},
+      {id:"d29", n:29, min:12, mod:"s4", title:"The energy systems",
+       task:"Drag the duration slider slowly from one second to ten minutes, watching the handover.",
+       drill:"Say which system dominates a heavy triple, a set of twenty, and a 2 km row — and why rest periods differ between them."},
+      {id:"d30", n:30, min:12, mod:"s4", title:"Fibre types and what training changes",
+       task:"The size principle, the three fibre types, and the two contested claims at the end.",
+       drill:"Explain why a set of 20 taken to near-failure can recruit the same fibres as a heavy set of 3."}
+    ]},
+    {w:"Week 7", t:"Recovery, pain and nutrition", note:"Modules 5, 11 and 6. Two days on pain signals, because that's the one you'll use most.", days:[
+      {id:"d31", n:31, min:12, mod:"s5", title:"The recovery hierarchy",
+       task:"Sleep, food, stress — then everything else. Plus the four kinds of fatigue.",
+       drill:"Rank your own recovery honestly. Most people find the top item is the one they've never deliberately worked on."},
+      {id:"d32", n:32, min:12, mod:"s11", title:"Normal sensations and warning signs",
+       task:"Work through the sensation sorter. Guess the category before tapping each one.",
+       drill:"Learn the stop-and-see-someone list well enough to recall it without looking. That one's worth memorising properly."},
+      {id:"d33", n:33, min:12, mod:"s11", title:"Handling the grey zone",
+       task:"Relative rest, the four ways to modify, the traffic-light model, and the honest ranking of recovery methods.",
+       drill:"Take any niggle you've had and write out the four modifications you could have made instead of stopping."},
+      {id:"d34", n:34, min:12, mod:"s6", title:"Nutrition fundamentals",
+       task:"The hierarchy of what matters, and the protein section.",
+       drill:"Without looking, put the six levels in order. The usual mistake is ranking timing and supplements too high."},
+      {id:"d35", n:35, min:10, mod:"s6", title:"Supplements and scope",
+       task:"The short honest list, and the scope-of-practice box.",
+       drill:"Pick any supplement you've seen advertised and work out which evidence questions from module 10 it would fail."}
+    ]},
+    {w:"Week 8", t:"Assessment, coaching and evidence", note:"Modules 7 to 10. The last day is the one that keeps working after the course ends.", days:[
+      {id:"d36", n:36, min:12, mod:"s7", title:"Screening, baselines and goals",
+       task:"Readiness screening, what's worth measuring, and process versus outcome goals.",
+       drill:"Convert one outcome goal of yours into the process goals that would actually cause it."},
+      {id:"d37", n:37, min:12, mod:"s8", title:"Cueing and motor learning",
+       task:"One cue at a time, feedback frequency, and the internal-versus-external cue pairs.",
+       drill:"Take three internal cues you use on yourself and rewrite each as an external one."},
+      {id:"d38", n:38, min:10, mod:"s8", title:"Behaviour change",
+       task:"Self-efficacy, identity, friction, lapse planning.",
+       drill:"Decide now, in writing, what a missed week will mean. Deciding in advance is the whole technique."},
+      {id:"d39", n:39, min:12, mod:"s9", title:"Pain science, load and populations",
+       task:"Load management, why scan findings appear in pain-free people, and the referral boundary.",
+       drill:"Practise saying what a trainer does and does not do, in one sentence each."},
+      {id:"d40", n:40, min:15, mod:"s10", title:"Reading the evidence yourself",
+       task:"The seven questions, then the claim checker.",
+       drill:"Decide your own verdict on all twelve claims before revealing any. Then find one fitness claim in the wild and run the seven questions on it."}
+    ]}
+  ];
+
+  var LS_KEY = "gymAtlasPlan";
+  var done = {};
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){ var p = JSON.parse(raw); if(p && typeof p === "object") done = p; }
+  }catch(e){}
+
+  var weeksEl  = document.getElementById("planWeeks");
+  var progN    = document.getElementById("progN");
+  var progBar  = document.getElementById("progBar");
+  var progSync = document.getElementById("progSync");
+
+  function saveLocal(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(done)); }catch(e){}
+  }
+  function countDone(){
+    var c = 0;
+    planData.forEach(function(w){ w.days.forEach(function(d){ if(done[d.id]) c++; }); });
+    return c;
+  }
+  var totalDays = 0;
+  planData.forEach(function(w){ totalDays += w.days.length; });
+  var progTotal = document.getElementById("progTotal");
+  if(progTotal) progTotal.textContent = totalDays;
+
+  /* progress code: one bit per day, packed 20 bits to a 4-character base-36 chunk */
+  var CODE_PREFIX = "TKA1";
+  function dayOrder(){
+    var order = [];
+    planData.forEach(function(w){ w.days.forEach(function(d){ order.push(d.id); }); });
+    return order;
+  }
+  function encodeProgress(){
+    var order = dayOrder(), chunks = [];
+    for(var i = 0; i < order.length; i += 20){
+      var val = 0;
+      for(var j = 0; j < 20 && i + j < order.length; j++){
+        if(done[order[i+j]]) val += Math.pow(2, j);
+      }
+      chunks.push(("0000" + val.toString(36)).slice(-4).toUpperCase());
+    }
+    return CODE_PREFIX + "-" + chunks.join("-");
+  }
+  function decodeProgress(raw){
+    var parts = String(raw || "").trim().toUpperCase().replace(/\s+/g, "").split("-");
+    if(parts[0] !== CODE_PREFIX) return null;
+    var order = dayOrder();
+    var expected = Math.ceil(order.length / 20);
+    if(parts.length - 1 !== expected) return null;
+    var out = {};
+    for(var c = 0; c < expected; c++){
+      if(!/^[0-9A-Z]{1,4}$/.test(parts[c+1])) return null;
+      var val = parseInt(parts[c+1], 36);
+      if(isNaN(val)) return null;
+      for(var j = 0; j < 20; j++){
+        var idx = c * 20 + j;
+        if(idx >= order.length) break;
+        if(Math.floor(val / Math.pow(2, j)) % 2 === 1) out[order[idx]] = true;
+      }
+    }
+    return out;
+  }
+
+  var syncCodeEl = document.getElementById("syncCode");
+  var syncMsgEl  = document.getElementById("syncMsg");
+  function syncSay(text, cls){
+    syncMsgEl.textContent = text;
+    syncMsgEl.className = "sync-msg " + (cls || "plain-msg");
+  }
+  function refreshCode(){
+    if(syncCodeEl && document.activeElement !== syncCodeEl) syncCodeEl.value = encodeProgress();
+  }
+
+  function updateProgress(){
+    var c = countDone();
+    progN.textContent = c;
+    progBar.style.width = (totalDays ? Math.round(c/totalDays*100) : 0) + "%";
+    refreshCode();
+  }
+
+  function buildPlan(){
+    weeksEl.innerHTML = "";
+    planData.forEach(function(w){
+      var sec = document.createElement("div");
+      sec.className = "wk";
+      var head = document.createElement("div");
+      head.className = "wk-h";
+      head.innerHTML = "<span>"+w.w+"</span>";
+      var h3 = document.createElement("h3"); h3.textContent = w.t;
+      head.appendChild(h3);
+      sec.appendChild(head);
+      var note = document.createElement("p"); note.textContent = w.note;
+      sec.appendChild(note);
+
+      w.days.forEach(function(d){
+        var row = document.createElement("div");
+        row.className = "day" + (done[d.id] ? " done" : "");
+        row.setAttribute("data-day", d.id);
+
+        var cb = document.createElement("input");
+        cb.type = "checkbox"; cb.id = "day-" + d.id; cb.checked = !!done[d.id];
+        cb.setAttribute("aria-label", "Mark day " + d.n + " complete");
+
+        var body = document.createElement("div");
+        body.className = "day-body";
+        var meta = document.createElement("p");
+        meta.className = "day-meta";
+        meta.textContent = "Day " + d.n + " · about " + d.min + " min";
+        var title = document.createElement("label");
+        title.className = "day-t"; title.setAttribute("for", cb.id);
+        title.textContent = d.title;
+        var task = document.createElement("p"); task.textContent = d.task;
+        var drill = document.createElement("div");
+        drill.className = "day-drill";
+        var b = document.createElement("b"); b.textContent = "Drill";
+        var dp = document.createElement("span"); dp.textContent = d.drill;
+        drill.appendChild(b); drill.appendChild(dp);
+        var jump = document.createElement("button");
+        jump.type = "button"; jump.className = "jump";
+        jump.textContent = "Open that section →";
+        jump.addEventListener("click", function(){
+          setView(d.mod.charAt(0) === "s" ? "sci" : "anat");
+          var el = document.getElementById(d.mod);
+          if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+        });
+
+        body.appendChild(meta); body.appendChild(title);
+        body.appendChild(task); body.appendChild(drill); body.appendChild(jump);
+
+        cb.addEventListener("change", function(){
+          if(cb.checked){ done[d.id] = true; } else { delete done[d.id]; }
+          row.className = "day" + (cb.checked ? " done" : "");
+          saveLocal(); updateProgress(); pushUp();
+        });
+
+        row.appendChild(cb); row.appendChild(body);
+        sec.appendChild(row);
+      });
+      weeksEl.appendChild(sec);
+    });
+    updateProgress();
+  }
+  buildPlan();
+
+  document.getElementById("progReset").addEventListener("click", function(){
+    done = {}; saveLocal(); buildPlan(); pushUp();
+    syncSay("Progress cleared.", "plain-msg");
+  });
+
+  document.getElementById("syncCopy").addEventListener("click", function(){
+    var code = encodeProgress();
+    syncCodeEl.value = code;
+    var fallback = function(){
+      try{ syncCodeEl.focus(); syncCodeEl.select(); }catch(e){}
+      syncSay("Couldn't copy automatically — the code is selected, copy it manually.", "plain-msg");
+    };
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code).then(function(){
+          syncSay("Code copied. Paste it on your other device and press Apply.", "ok");
+        }, fallback);
+      } else { fallback(); }
+    }catch(e){ fallback(); }
+  });
+
+  document.getElementById("syncApply").addEventListener("click", function(){
+    var incoming = decodeProgress(syncCodeEl.value);
+    if(!incoming){
+      syncSay("That doesn't look like a valid progress code. It should start with " + CODE_PREFIX + ".", "err");
+      return;
+    }
+    var before = countDone(), added = 0;
+    Object.keys(incoming).forEach(function(k){
+      if(!done[k]){ done[k] = true; added++; }
+    });
+    saveLocal(); buildPlan(); pushUp();
+    if(added === 0){
+      syncSay("Already up to date — that code had nothing your progress was missing.", "plain-msg");
+    } else {
+      syncSay("Added " + added + " day" + (added === 1 ? "" : "s") + ". You're now at " + (before + added) + " of " + totalDays + ".", "ok");
+    }
+  });
+
+  /* persistence: synced store when available, this browser otherwise */
+  var dbRef = null, writing = false, pendingWrite = false, settled = false;
+
+  function localOnly(msg){
+    settled = true;
+    progSync.textContent = msg || "Progress is saved in this browser only.";
+  }
+  function pushUp(){
+    if(!dbRef) return;
+    if(writing){ pendingWrite = true; return; }
+    writing = true;
+    dbRef.set({days: done}).then(function(){
+      writing = false;
+      if(pendingWrite){ pendingWrite = false; pushUp(); }
+    }, function(){
+      writing = false; pendingWrite = false;
+      progSync.textContent = "Couldn't reach synced storage — kept in this browser.";
+    });
+  }
+
+  var loadTimer = setTimeout(function(){
+    if(!settled) localOnly("Synced storage is slow to answer — your ticks are safe in this browser meanwhile.");
+  }, 10000);
+
+  if(window.claude && typeof window.claude.use === "function"){
+    window.claude.use("db").then(function(db){
+      if(!db){ clearTimeout(loadTimer); localOnly(); return; }
+      dbRef = db.doc("progress/plan");
+      dbRef.onSnapshot(function(snap){
+        clearTimeout(loadTimer); settled = true;
+        progSync.textContent = "Progress syncs across your devices.";
+        if(writing || pendingWrite) return;
+        if(snap.exists){
+          var data = snap.data() || {};
+          var remote = data.days;
+          if(remote && typeof remote === "object"){
+            done = {};
+            Object.keys(remote).forEach(function(k){ if(remote[k]) done[k] = true; });
+            saveLocal(); buildPlan();
+          }
+        } else if(countDone() > 0){
+          pushUp();
+        }
+      }, function(){
+        clearTimeout(loadTimer);
+        localOnly("Synced storage isn't available — progress is saved in this browser.");
+      });
+    }, function(){ clearTimeout(loadTimer); localOnly(); });
+  } else {
+    clearTimeout(loadTimer); localOnly();
+  }
+})();
+</script>
